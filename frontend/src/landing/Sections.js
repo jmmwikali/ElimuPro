@@ -10,10 +10,11 @@ const P = {
 const Ic = ({ n }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={P[n]} /></svg>;
 
 const FEATURE_LOGOS = {
+  zeroq: ['zeroq-logo.svg', 'ZeroQ, powered by ElimuPro'],
   careergps: ['careergps-logo.png', 'CareerGPS by ElimuPro'],
 };
 const FEATURES = [
-  ['user', 'Admissions & student records', 'From first application to enrolment, keep every learner record complete and easy to find.'],
+  ['zeroq', 'ZeroQ digital admissions', 'No queue. No paperwork. Just scan. Complete admission requirements digitally and arrive with a secure pass.'],
   ['book', 'Academics', 'Manage classes, streams, subjects, terms and results in one place.'],
   ['card', 'Fee management', 'Record school payments and keep balances and history up to date.'],
   ['chat', 'Parent communication', 'Share school updates and announcements with parents. Parent access is coming soon.'],

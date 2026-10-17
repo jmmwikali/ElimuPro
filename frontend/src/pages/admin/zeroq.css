@@ -1,0 +1,55 @@
+.zeroq-page { max-width: 1080px; }
+.zeroq-heading h1 { margin: .1rem 0 .2rem; font-size: 1.9rem; }
+.zeroq-heading p { margin: 0; color: var(--muted); }
+.zeroq-kicker { display: block; color: var(--action); font-size: .72rem; font-weight: 700; letter-spacing: .1em; }
+.zeroq-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.zeroq-stat { border-radius: 8px; padding: .9rem; }
+.zeroq-stat.warning { border-top: 2px solid var(--gold); }
+.zeroq-stat.green { border-top: 2px solid var(--green); }
+.zeroq-stat.blue { border-top: 2px solid var(--action); }
+.zeroq-section { display: grid; gap: .75rem; }
+.zeroq-section h2 { margin: 0; }
+.zeroq-status { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 999px; padding: .2rem .55rem; font-size: .74rem; text-transform: capitalize; white-space: nowrap; }
+.zeroq-status.ready, .zeroq-status.verified { color: var(--green); border-color: var(--green); }
+.zeroq-status.checked_in, .zeroq-status.completed { color: var(--paper-blue); border-color: var(--action); }
+.zeroq-status.expired, .zeroq-status.revoked, .zeroq-status.invalid, .zeroq-status.wrong_institution, .zeroq-status.already_used { color: var(--red); border-color: var(--red); }
+.zeroq-scanner { position: relative; aspect-ratio: 4 / 3; max-height: 60vh; min-height: 260px; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: #030912; }
+.zeroq-video { display: none; width: 100%; height: 100%; object-fit: cover; }
+.zeroq-video.visible { display: block; }
+.zeroq-camera-state { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: .65rem; padding: 1.5rem; text-align: center; color: var(--muted); }
+.zeroq-camera-state strong { color: var(--text); }
+.zeroq-camera-mark { display: grid; place-items: center; width: 58px; aspect-ratio: 1; border: 1px solid var(--action); border-radius: 50%; color: var(--action); font: 700 1.15rem var(--serif); }
+.zeroq-scan-frame { position: absolute; width: min(62vw, 300px); aspect-ratio: 1; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 2px solid var(--action); border-radius: 18px; box-shadow: 0 0 0 999px rgba(0, 0, 0, .22); pointer-events: none; }
+.zeroq-result { display: grid; gap: .9rem; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.zeroq-result.verified { border-color: var(--green); }
+.zeroq-result.rejected { border-color: var(--red); }
+.zeroq-result h2 { margin: .2rem 0 0; text-transform: capitalize; }
+.zeroq-result p { margin: 0; }
+.zeroq-verify-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.zeroq-verify-grid > div { min-width: 0; }
+.zeroq-verify-grid span, .zeroq-pass-details span { display: block; font-size: .76rem; color: var(--muted); }
+.zeroq-verify-grid strong, .zeroq-pass-details strong { display: block; overflow-wrap: anywhere; }
+.zeroq-empty { max-width: 660px; }
+.zeroq-empty h2 { margin-bottom: .5rem; }
+.zeroq-pass { overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
+.zeroq-pass-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 1.2rem; background: linear-gradient(115deg, #0D1B2E, #102C48 60%, #064D6B); border-bottom: 1px solid var(--border); }
+.zeroq-pass-top h2 { margin: .35rem 0 .15rem; font-size: 1.35rem; }
+.zeroq-pass-top p { margin: 0; color: var(--paper-blue); }
+.zeroq-pass-body { display: grid; gap: 1.25rem; justify-items: center; padding: 1.25rem; }
+.zeroq-qr-frame { display: grid; place-items: center; width: min(100%, 260px); min-height: 240px; padding: 1rem; background: #fff; border-radius: 8px; }
+.zeroq-qr-placeholder { color: #26384a; text-align: center; font-size: .9rem; }
+.zeroq-pass-details { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
+.zeroq-pass-note { padding: .8rem 1.2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .84rem; }
+.zeroq-actions { padding: 0 1.2rem 1.2rem; }
+@media (min-width: 760px) {
+  .zeroq-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .zeroq-pass-body { grid-template-columns: 260px minmax(0, 1fr); justify-items: stretch; align-items: center; }
+  .zeroq-verify-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .zeroq-scanner { aspect-ratio: 16 / 9; }
+}
+@media print {
+  .zeroq-page { max-width: none; }
+  .zeroq-pass { border-color: #333; background: #fff; color: #111; box-shadow: none; }
+  .zeroq-pass-top { background: #fff; color: #111; }
+  .zeroq-pass-top p, .zeroq-pass-note, .zeroq-pass-details span { color: #444; }
+}
