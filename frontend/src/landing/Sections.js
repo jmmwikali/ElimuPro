@@ -9,6 +9,9 @@ const P = {
 };
 const Ic = ({ n }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={P[n]} /></svg>;
 
+const FEATURE_LOGOS = {
+  careergps: ['careergps-logo.png', 'CareerGPS by ElimuPro'],
+};
 const FEATURES = [
   ['user', 'Admissions & student records', 'From first application to enrolment, keep every learner record complete and easy to find.'],
   ['book', 'Academics', 'Manage classes, streams, subjects, terms and results in one place.'],
@@ -16,6 +19,7 @@ const FEATURES = [
   ['chat', 'Parent communication', 'Share school updates and announcements with parents. Parent access is coming soon.'],
   ['bell', 'Results at a glance', 'See how classes and learners are performing, term by term.'],
   ['chart', 'Reports that stay ready', 'Give leadership accurate dashboards and reports without chasing spreadsheets.'],
+  ['careergps', 'CareerGPS career guidance', 'Help every learner find their path. CareerGPS guides career and subject pathway choices that match their strengths and interests.'],
 ];
 const STEPS = [
   ['Discover', "We map your school's people, processes and goals.", 'chat', 'A plan shaped around your school', 'A focused discovery session gives our team the context to recommend the right modules, migration plan and rollout timeline.', '60-minute discovery call'],
@@ -31,7 +35,15 @@ export function Features() {
         <Photo item={MEDIA.features} />
       </div>
       <div className="lp-fgrid">
-        {FEATURES.map(([i, t, d]) => <div key={t}><span className="lp-fic"><Ic n={i} /></span><h3>{t}</h3><p>{d}</p></div>)}
+        {FEATURES.map(([i, t, d]) => {
+          const logo = FEATURE_LOGOS[i];
+          return (
+            <div key={t} className={logo ? `lp-feature-${i}` : ''}>
+              {logo ? <img className="lp-feature-logo" src={`${process.env.PUBLIC_URL || ''}/${logo[0]}`} alt={logo[1]} /> : <span className="lp-fic"><Ic n={i} /></span>}
+              <div><h3>{t}</h3><p>{d}</p></div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

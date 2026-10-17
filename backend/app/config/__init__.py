@@ -25,6 +25,10 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=int(os.environ.get("JWT_ACCESS_HOURS", 12)))
     FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
     CORS_ORIGINS = [o.strip() for o in FRONTEND_URL.split(",") if o.strip()]
+    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+    GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+    GEMINI_TIMEOUT = int(os.environ.get("GEMINI_TIMEOUT", 20))
+    APEX_RATE_LIMIT_PER_MINUTE = int(os.environ.get("APEX_RATE_LIMIT_PER_MINUTE", 12))
 
 
 class TestConfig(Config):
@@ -34,3 +38,4 @@ class TestConfig(Config):
     JWT_SECRET_KEY = "test-jwt-secret-key-at-least-32-bytes-long"
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     SQLALCHEMY_ENGINE_OPTIONS = {}
+    GEMINI_API_KEY = None

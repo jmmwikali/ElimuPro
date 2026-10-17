@@ -1,0 +1,32 @@
+.apex-launch { position: fixed; right: 1rem; bottom: calc(1rem + var(--safe-b)); z-index: 45; display: inline-flex; align-items: center; gap: .5rem;
+  min-height: 48px; padding: 0 1rem 0 .4rem; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-raised);
+  color: var(--text); font: 600 .9rem var(--font); box-shadow: var(--shadow); cursor: pointer; }
+.apex-launch:hover { border-color: var(--action); }
+.apex-dot { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--lime); color: var(--midnight); font-weight: 800; }
+
+.apex-panel { position: fixed; right: 1rem; bottom: calc(1rem + var(--safe-b)); z-index: 45; width: min(380px, calc(100vw - 2rem));
+  height: min(560px, calc(100vh - 6rem)); display: flex; flex-direction: column; background: var(--surface-raised-solid);
+  border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); color: var(--text); overflow: hidden; }
+.apex-head { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; border-bottom: 1px solid var(--border); }
+.apex-title { display: flex; align-items: center; gap: .6rem; }
+.apex-mark { width: 36px; height: 36px; border-radius: 8px; }
+.apex-logo { align-self: center; width: 160px; max-width: 70%; border-radius: 12px; border: 1px solid var(--border); margin-bottom: .25rem; }
+.apex-head small { display: block; color: var(--muted); font-size: .78rem; }
+.apex-close { background: none; border: 0; color: var(--muted); font-size: 1.6rem; line-height: 1; min-width: 44px; min-height: 44px; cursor: pointer; }
+.apex-close:hover { color: var(--text); }
+.apex-topic { display: grid; gap: .3rem; padding: .6rem 1rem; font-size: .8rem; color: var(--muted); border-bottom: 1px solid var(--border); }
+.apex-log { flex: 1; overflow-y: auto; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .5rem; }
+.apex-msg { margin: 0; padding: .55rem .8rem; border-radius: 12px; max-width: 88%; white-space: pre-wrap; line-height: 1.45; font-size: .92rem; }
+.apex-msg.assistant { align-self: flex-start; background: var(--soft); border: 1px solid var(--border); }
+.apex-msg.user { align-self: flex-end; background: var(--action); color: var(--action-text); }
+.apex-typing { color: var(--muted); font-style: italic; }
+.apex-error { margin: 0; padding: .55rem .8rem; border-radius: 10px; background: var(--danger-soft); font-size: .88rem; }
+.apex-form { display: flex; gap: .5rem; padding: .6rem 1rem; border-top: 1px solid var(--border); }
+.apex-note { margin: 0; padding: 0 1rem .6rem; color: var(--muted); font-size: .72rem; }
+
+/* Keep clear of the portal bottom navigation on phones. */
+@media (max-width: 767px) {
+  .apex-launch { bottom: calc(76px + var(--safe-b)); padding-right: .4rem; }
+  .apex-launch span:last-child { display: none; }
+  .apex-panel { right: .5rem; left: .5rem; width: auto; bottom: calc(.5rem + var(--safe-b)); height: calc(100vh - 5rem); }
+}

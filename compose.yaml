@@ -23,6 +23,8 @@ services:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-elimupro}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-elimupro}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
       JWT_ACCESS_HOURS: ${JWT_ACCESS_HOURS:-12}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
     depends_on:
       db:
         condition: service_healthy

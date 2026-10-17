@@ -84,6 +84,10 @@
 .lp-sec > h2 { margin-bottom: 2rem; } .lp-sec .center { text-align: center; } .lp-sec h2.center { margin-bottom: 2.5rem; }
 .lp-eyebrow { color: var(--g); font-weight: 800; font-size: .85rem; text-transform: uppercase; margin: 0 0 .5rem; }
 .lp-fgrid { display: grid; grid-template-columns: 1fr; background: var(--surface); border: 1px solid var(--bd); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.lp-feature-logo { display: block; width: 120px; height: 120px; max-width: 100%; object-fit: contain; border: 1px solid var(--bd); border-radius: 8px; margin-bottom: 1.5rem; }
+/* CareerGPS closes the grid as a full-width card: logo beside the copy on wider screens. */
+.lp-fgrid > .lp-feature-careergps { grid-column: 1 / -1; }
+@media (min-width: 700px) { .lp-fgrid > .lp-feature-careergps { display: flex; align-items: center; gap: 2rem; } .lp-feature-careergps .lp-feature-logo { margin-bottom: 0; flex: none; } }
 @media (min-width: 700px) { .lp-fgrid { grid-template-columns: 1fr 1fr; } } @media (min-width: 1000px) { .lp-fgrid { grid-template-columns: repeat(3, 1fr); } }
 .lp-fgrid > div { padding: 2rem 2rem 1.75rem; border-right: 1px solid var(--bd); border-bottom: 1px solid var(--bd); margin: 0 -1px -1px 0; }
 .lp-fic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; background: var(--pale); color: var(--paper-blue); margin-bottom: 1.5rem; } .lp-fic svg { width: 22px; height: 22px; }
