@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 768" role="img" aria-labelledby="title desc">
+  <title id="title">ZeroQ, powered by ElimuPro</title>
+  <desc id="desc">A luminous blue ZeroQ mark with an orbital ring on a dark background.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="35%" r="80%">
+      <stop offset="0" stop-color="#071b37"/>
+      <stop offset=".62" stop-color="#030914"/>
+      <stop offset="1" stop-color="#010207"/>
+    </radialGradient>
+    <linearGradient id="metal" x1=".1" y1=".1" x2=".9" y2=".9">
+      <stop offset="0" stop-color="#00e9ff"/>
+      <stop offset=".22" stop-color="#198dff"/>
+      <stop offset=".52" stop-color="#f6fcff"/>
+      <stop offset=".78" stop-color="#75baff"/>
+      <stop offset="1" stop-color="#2739da"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#36ffff"/>
+      <stop offset=".5" stop-color="#00c8ff"/>
+      <stop offset="1" stop-color="#2672ff"/>
+    </linearGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b8d7ff"/>
+      <stop offset=".55" stop-color="#f7fbff"/>
+      <stop offset=".82" stop-color="#09dfff"/>
+      <stop offset="1" stop-color="#2587ff"/>
+    </linearGradient>
+    <filter id="glow" x="-.5" y="-.5" width="2" height="2">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft" x="-.3" y="-.3" width="1.6" height="1.6">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+  </defs>
+  <rect width="768" height="768" rx="28" fill="url(#bg)"/>
+  <circle cx="382" cy="236" r="146" fill="#018dff" opacity=".2" filter="url(#soft)"/>
+  <path d="M383 94a142 142 0 1 0 91 251l-39-47a82 82 0 1 1 29-64v7l55 53a142 142 0 0 0-136-200z" fill="url(#metal)"/>
+  <path d="M405 277h65l83 96h-69z" fill="url(#cyan)"/>
+  <path d="M158 284c89-42 174-75 286-106 79-22 137-31 174-25-28 22-65 49-112 78" fill="none" stroke="#008cff" stroke-width="22" stroke-linecap="round" opacity=".62" filter="url(#soft)"/>
+  <path d="M158 284c89-42 174-75 286-106 79-22 137-31 174-25-28 22-65 49-112 78" fill="none" stroke="url(#cyan)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M158 284c89-42 174-75 286-106 79-22 137-31 174-25" fill="none" stroke="#d4ffff" stroke-width="2" stroke-linecap="round" opacity=".9"/>
+  <circle cx="618" cy="153" r="8" fill="#f2ffff" filter="url(#glow)"/>
+  <text x="384" y="521" fill="url(#word)" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="600" text-anchor="middle">ZeroQ</text>
+  <path d="M126 578h44m428 0h44" stroke="#05d9f5" stroke-width="3"/>
+  <text x="384" y="588" fill="#e1ecf8" font-family="Arial, Helvetica, sans-serif" font-size="22" letter-spacing="8" text-anchor="middle">POWERED BY</text>
+  <text x="384" y="632" fill="#06c9f4" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" letter-spacing="7" text-anchor="middle">ELIMUPRO</text>
+</svg>

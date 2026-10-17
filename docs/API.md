@@ -56,3 +56,8 @@ Admin/principal/deputy: GET `/parents` (parent logins with linked children), POS
 links the guardian to that account (password not needed) so siblings share a login. 409 if the guardian already has a login or the email belongs to another role/school.
 Parent: GET `/parent/dashboard`, `/parent/children/<student_id>` (+ `/results`, `/fees`, `/timetable`), `/parent/announcements` (audiences "all" and "parents", class-targeted notices only for classes of their children).
 A parent can reach only children linked through a guardian record; any other student id (including other schools') returns 404. Parents get 403 on every staff, teacher and student endpoint.
+
+## ZeroQ
+Student: GET `/zeroq/my`, POST `/zeroq/my/pass` (optional `expected_on: YYYY-MM-DD`), POST `/zeroq/my/pass/revoke`.
+School admin/principal/deputy: GET `/zeroq/dashboard`, GET `/zeroq/queue?date=YYYY-MM-DD&q=`, POST `/zeroq/scan` (`qr_value`), POST `/zeroq/<pass_id>/complete`, POST `/zeroq/<pass_id>/revoke`.
+The QR value is an opaque, one-time token; scan results are validated server-side and are bound to the authenticated user's school. Invalid, expired, revoked, reused, and wrong-school scans return a clear `status` and are logged. Camera failures and network errors must not be presented as verified. Scan history has no staff browsing endpoint in this first slice.

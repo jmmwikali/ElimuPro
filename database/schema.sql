@@ -83,8 +83,8 @@ CREATE TABLE users (
 	FOREIGN KEY(school_id) REFERENCES schools (id),
 	UNIQUE (email)
 );
-CREATE INDEX ix_users_school_id ON users (school_id);
 CREATE INDEX ix_users_role ON users (role);
+CREATE INDEX ix_users_school_id ON users (school_id);
 
 CREATE TABLE announcements (
 	id SERIAL NOT NULL,
@@ -117,8 +117,8 @@ CREATE TABLE audit_logs (
 	FOREIGN KEY(school_id) REFERENCES schools (id),
 	FOREIGN KEY(user_id) REFERENCES users (id)
 );
-CREATE INDEX ix_audit_logs_school_id ON audit_logs (school_id);
 CREATE INDEX ix_audit_logs_user_id ON audit_logs (user_id);
+CREATE INDEX ix_audit_logs_school_id ON audit_logs (school_id);
 
 CREATE TABLE streams (
 	id SERIAL NOT NULL,
@@ -260,8 +260,8 @@ CREATE TABLE exam_results (
 	FOREIGN KEY(student_id) REFERENCES students (id),
 	FOREIGN KEY(subject_id) REFERENCES subjects (id)
 );
-CREATE INDEX ix_exam_results_school_id ON exam_results (school_id);
 CREATE INDEX ix_exam_results_student_id ON exam_results (student_id);
+CREATE INDEX ix_exam_results_school_id ON exam_results (school_id);
 
 CREATE TABLE guardians (
 	id SERIAL NOT NULL,
@@ -278,8 +278,8 @@ CREATE TABLE guardians (
 	FOREIGN KEY(student_id) REFERENCES students (id),
 	FOREIGN KEY(user_id) REFERENCES users (id)
 );
-CREATE INDEX ix_guardians_school_id ON guardians (school_id);
 CREATE INDEX ix_guardians_student_id ON guardians (student_id);
+CREATE INDEX ix_guardians_school_id ON guardians (school_id);
 
 CREATE TABLE payments (
 	id SERIAL NOT NULL,
@@ -301,8 +301,8 @@ CREATE TABLE payments (
 	FOREIGN KEY(term_id) REFERENCES terms (id),
 	FOREIGN KEY(recorded_by) REFERENCES users (id)
 );
-CREATE INDEX ix_payments_school_id ON payments (school_id);
 CREATE INDEX ix_payments_student_id ON payments (student_id);
+CREATE INDEX ix_payments_school_id ON payments (school_id);
 
 CREATE TABLE student_applications (
 	id SERIAL NOT NULL,
@@ -341,8 +341,8 @@ CREATE TABLE student_applications (
 	FOREIGN KEY(applying_class_id) REFERENCES classes (id),
 	FOREIGN KEY(reviewed_by) REFERENCES users (id)
 );
-CREATE INDEX ix_student_applications_school_id ON student_applications (school_id);
 CREATE INDEX ix_student_applications_status ON student_applications (status);
+CREATE INDEX ix_student_applications_school_id ON student_applications (school_id);
 
 CREATE TABLE student_fees (
 	id SERIAL NOT NULL,
@@ -373,5 +373,51 @@ CREATE TABLE application_documents (
 	FOREIGN KEY(school_id) REFERENCES schools (id),
 	FOREIGN KEY(application_id) REFERENCES student_applications (id)
 );
-CREATE INDEX ix_application_documents_school_id ON application_documents (school_id);
 CREATE INDEX ix_application_documents_application_id ON application_documents (application_id);
+CREATE INDEX ix_application_documents_school_id ON application_documents (school_id);
+
+CREATE TABLE zeroq_passes (
+	id SERIAL NOT NULL,
+	school_id INTEGER NOT NULL,
+	application_id INTEGER NOT NULL,
+	student_id INTEGER NOT NULL,
+	reference VARCHAR(30) NOT NULL,
+	token_hash VARCHAR(64) NOT NULL,
+	expected_on DATE NOT NULL,
+	expires_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	revoked_at TIMESTAMP WITHOUT TIME ZONE,
+	used_at TIMESTAMP WITHOUT TIME ZONE,
+	completed_at TIMESTAMP WITHOUT TIME ZONE,
+	issued_by INTEGER,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(school_id) REFERENCES schools (id),
+	FOREIGN KEY(application_id) REFERENCES student_applications (id),
+	FOREIGN KEY(student_id) REFERENCES students (id),
+	UNIQUE (reference),
+	UNIQUE (token_hash),
+	FOREIGN KEY(issued_by) REFERENCES users (id)
+);
+CREATE INDEX ix_zeroq_passes_expires_at ON zeroq_passes (expires_at);
+CREATE INDEX ix_zeroq_passes_application_id ON zeroq_passes (application_id);
+CREATE INDEX ix_zeroq_passes_student_id ON zeroq_passes (student_id);
+CREATE INDEX ix_zeroq_passes_school_id ON zeroq_passes (school_id);
+
+CREATE TABLE zeroq_scans (
+	id SERIAL NOT NULL,
+	school_id INTEGER NOT NULL,
+	pass_id INTEGER,
+	scanned_by INTEGER NOT NULL,
+	token_fingerprint VARCHAR(64) NOT NULL,
+	outcome VARCHAR(30) NOT NULL,
+	scanned_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(school_id) REFERENCES schools (id),
+	FOREIGN KEY(pass_id) REFERENCES zeroq_passes (id),
+	FOREIGN KEY(scanned_by) REFERENCES users (id)
+);
+CREATE INDEX ix_zeroq_scans_scanned_at ON zeroq_scans (scanned_at);
+CREATE INDEX ix_zeroq_scans_outcome ON zeroq_scans (outcome);
+CREATE INDEX ix_zeroq_scans_school_id ON zeroq_scans (school_id);
+CREATE INDEX ix_zeroq_scans_pass_id ON zeroq_scans (pass_id);
+CREATE INDEX ix_zeroq_scans_scanned_by ON zeroq_scans (scanned_by);

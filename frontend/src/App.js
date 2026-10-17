@@ -23,10 +23,13 @@ import TeacherDashboard from './pages/teacher/Dashboard';
 import TeacherClasses from './pages/teacher/Classes';
 import TeacherResults from './pages/teacher/Results';
 import TeacherAnnouncements from './pages/teacher/Announcements';
+import ZeroQStudent from './pages/student/ZeroQ';
+import { ZeroQDashboard, ZeroQQueue, ZeroQScanner } from './pages/admin/ZeroQ';
 
 const STUDENT_NAV = [
   { to: '/student', label: 'Home', icon: 'home', end: true }, { to: '/student/results', label: 'Results', icon: 'chart' },
   { to: '/student/timetable', label: 'Timetable', icon: 'clock' }, { to: '/student/fees', label: 'Fees', icon: 'wallet' },
+  { to: '/student/zeroq', label: 'ZeroQ', icon: 'file' },
   { to: '/student/announcements', label: 'News', icon: 'bell' },
 ];
 const STUDENT_SIDE = [...STUDENT_NAV, { to: '/student/profile', label: 'My Profile', icon: 'user' },
@@ -35,6 +38,7 @@ const APPLICANT_SIDE = [{ to: '/student/application', label: 'My Application', i
 
 const ADMIN_NAV = [
   { to: '/admin', label: 'Dashboard', icon: 'home', end: true }, { to: '/admin/applications', label: 'Applications', icon: 'file' },
+  { to: '/admin/zeroq', label: 'ZeroQ Admissions', icon: 'file' },
   { to: '/admin/students', label: 'Students', icon: 'users' }, { to: '/admin/teachers', label: 'Teachers', icon: 'book' }, { to: '/admin/parents', label: 'Parents', icon: 'users' }, { to: '/admin/classes', label: 'Classes & Streams', icon: 'school' },
   { to: '/admin/fees', label: 'Fees & Payments', icon: 'wallet' }, { to: '/admin/announcements', label: 'Announcements', icon: 'bell' },
 ];
@@ -75,6 +79,7 @@ export default function App() {
         <Route path="/student" element={<StudentShell />}>
           <Route index element={<Dashboard />} />
           <Route path="application" element={<Application />} />
+          <Route path="zeroq" element={<ZeroQStudent />} />
           <Route path="results" element={<Results />} />
           <Route path="timetable" element={<Timetable />} />
           <Route path="fees" element={<Fees />} />
@@ -91,6 +96,9 @@ export default function App() {
           <Route element={<ProtectedRoute roles={['school_admin', 'principal', 'deputy_principal']} />}>
             <Route path="applications" element={<Applications />} />
             <Route path="applications/:id" element={<ApplicationDetail />} />
+            <Route path="zeroq" element={<ZeroQDashboard />} />
+            <Route path="zeroq/queue" element={<ZeroQQueue />} />
+            <Route path="zeroq/scanner" element={<ZeroQScanner />} />
             <Route path="students" element={<Students />} />
             <Route path="students/:id" element={<StudentDetail />} />
             <Route path="teachers" element={<Teachers />} />
