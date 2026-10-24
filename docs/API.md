@@ -61,3 +61,13 @@ A parent can reach only children linked through a guardian record; any other stu
 Student: GET `/zeroq/my`, POST `/zeroq/my/pass` (optional `expected_on: YYYY-MM-DD`), POST `/zeroq/my/pass/revoke`.
 School admin/principal/deputy: GET `/zeroq/dashboard`, GET `/zeroq/queue?date=YYYY-MM-DD&q=`, POST `/zeroq/scan` (`qr_value`), POST `/zeroq/<pass_id>/complete`, POST `/zeroq/<pass_id>/revoke`.
 The QR value is an opaque, one-time token; scan results are validated server-side and are bound to the authenticated user's school. Invalid, expired, revoked, reused, and wrong-school scans return a clear `status` and are logged. Camera failures and network errors must not be presented as verified. Scan history has no staff browsing endpoint in this first slice.
+
+## Pricing
+Super admin only (every other role gets 403): GET `/pricing` lists every component with its current price; PUT `/pricing/<key>` edits one.
+Keys: `academic_analytics`, `financial_analytics`, `zeroq_admissions`, `zeroq_transfers`, `careergps`, `apex_ai_pro`.
+PUT accepts `is_active`, `description`, `name`, plus `amount` for a flat component or `tiers` for a tiered one (sending the wrong one is a 422).
+`tiers` is a list of `{up_to_students, amount}`: 2 to 6 bands, limits strictly increasing, and the last band has `up_to_students: null` (no upper limit).
+A limit is **inclusive**: a school with exactly 1,000 students pays the "up to 1,000" band, so no school size falls in a gap.
+Amounts are 0 to 10,000,000 with at most 2 decimals. Nothing is written until validation passes, and each edit is written to the audit log with the before and after values.
+Until a component is first edited it uses the launch default from `services/pricing.py`; the first edit creates its row. Billing unit and currency are fixed per component.
+`services.pricing.price_for(component, students)` returns the unit price for a school size and is what invoicing should call.

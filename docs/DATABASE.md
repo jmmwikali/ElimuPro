@@ -10,6 +10,7 @@ Use Flask-Migrate for database changes: run `flask --app run:app db upgrade` fro
 | Academic structure | `academic_years`, `terms`, `classes`, `streams`, `subjects`, `grade_bands` (school-configurable grading) |
 | Learners | `students`, `guardians`, `student_applications`, `application_documents` |
 | ZeroQ admissions | `zeroq_passes`, `zeroq_scans` |
+| Component pricing | `price_components`, `price_tiers` |
 | Assessment | `exams`, `exam_results`, `timetable_entries` |
 | Staff | `teacher_assignments` (teacher user x class x subject; unique per triple; drives every teacher permission) |
 | Finance & comms | `fee_structures`, `student_fees`, `payments`, `announcements` |
