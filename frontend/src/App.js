@@ -14,6 +14,7 @@ import Classes from './pages/admin/Classes';
 import FeesAdmin from './pages/admin/Fees';
 import AnnouncementsAdmin from './pages/admin/Announcements';
 import Platform from './pages/admin/Platform';
+import Pricing from './pages/admin/Pricing';
 import Teachers from './pages/admin/Teachers';
 import Parents from './pages/admin/Parents';
 import ParentDashboard from './pages/parent/Dashboard';
@@ -43,6 +44,9 @@ const ADMIN_NAV = [
   { to: '/admin/fees', label: 'Fees & Payments', icon: 'wallet' }, { to: '/admin/announcements', label: 'Announcements', icon: 'bell' },
 ];
 const BURSAR_NAV = [ADMIN_NAV[0], ADMIN_NAV.find((n) => n.to === '/admin/fees')];
+const PLATFORM_NAV = [
+  { to: '/platform', label: 'Schools', icon: 'school', end: true }, { to: '/platform/pricing', label: 'Pricing', icon: 'wallet' },
+];
 const PARENT_NAV = [
   { to: '/parent', label: 'My children', icon: 'users', end: true }, { to: '/parent/announcements', label: 'News', icon: 'bell' },
   { to: '/parent/settings', label: 'Settings', icon: 'gear' },
@@ -128,8 +132,9 @@ export default function App() {
       </Route>
 
       <Route element={<ProtectedRoute roles={['super_admin']} />}>
-        <Route path="/platform" element={<AppShell nav={[{ to: '/platform', label: 'Schools', icon: 'school', end: true }]} brandLabel="ElimuPro Platform" />}>
+        <Route path="/platform" element={<AppShell nav={PLATFORM_NAV} brandLabel="ElimuPro Platform" />}>
           <Route index element={<Platform />} />
+          <Route path="pricing" element={<Pricing />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
