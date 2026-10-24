@@ -28,6 +28,8 @@ import TeacherClasses from './pages/teacher/Classes';
 import TeacherResults from './pages/teacher/Results';
 import TeacherAnnouncements from './pages/teacher/Announcements';
 import ZeroQStudent from './pages/student/ZeroQ';
+import Onboarding from './pages/student/Onboarding';
+import ZeroQReview from './pages/admin/ZeroQReview';
 import { ZeroQDashboard, ZeroQQueue, ZeroQScanner } from './pages/admin/ZeroQ';
 
 const STUDENT_NAV = [
@@ -36,13 +38,14 @@ const STUDENT_NAV = [
   { to: '/student/zeroq', label: 'ZeroQ', icon: 'file' },
   { to: '/student/announcements', label: 'News', icon: 'bell' },
 ];
-const STUDENT_SIDE = [...STUDENT_NAV, { to: '/student/profile', label: 'My Profile', icon: 'user' },
+const STUDENT_SIDE = [...STUDENT_NAV, { to: '/student/onboarding', label: 'Admission progress', icon: 'chart' }, { to: '/student/profile', label: 'My Profile', icon: 'user' },
   { to: '/student/application', label: 'My Application', icon: 'file' }, { to: '/student/settings', label: 'Settings', icon: 'gear' }];
-const APPLICANT_SIDE = [{ to: '/student/application', label: 'My Application', icon: 'file' }, { to: '/student/settings', label: 'Settings', icon: 'gear' }];
+const APPLICANT_SIDE = [{ to: '/student/application', label: 'My Application', icon: 'file' }, { to: '/student/onboarding', label: 'Admission progress', icon: 'chart' }, { to: '/student/settings', label: 'Settings', icon: 'gear' }];
 
 const ADMIN_NAV = [
   { to: '/admin', label: 'Dashboard', icon: 'home', end: true }, { to: '/admin/applications', label: 'Applications', icon: 'file' },
   { to: '/admin/zeroq', label: 'ZeroQ Admissions', icon: 'file' },
+  { to: '/admin/zeroq-review', label: 'ZeroQ Review', icon: 'file' },
   { to: '/admin/students', label: 'Students', icon: 'users' }, { to: '/admin/teachers', label: 'Teachers', icon: 'book' }, { to: '/admin/parents', label: 'Parents', icon: 'users' }, { to: '/admin/classes', label: 'Classes & Streams', icon: 'school' },
   { to: '/admin/fees', label: 'Fees & Payments', icon: 'wallet' }, { to: '/admin/announcements', label: 'Announcements', icon: 'bell' },
   { to: '/admin/billing', label: 'Billing', icon: 'wallet' },
@@ -65,7 +68,7 @@ function StudentShell() {
   const { user } = useAuth();
   return user.is_enrolled
     ? <AppShell nav={STUDENT_SIDE} bottom={STUDENT_NAV} />
-    : <AppShell nav={APPLICANT_SIDE} bottom={[{ to: '/student/application', label: 'Application', icon: 'file' }, { to: '/student/settings', label: 'Settings', icon: 'gear' }]} />;
+    : <AppShell nav={APPLICANT_SIDE} bottom={[{ to: '/student/application', label: 'Application', icon: 'file' }, { to: '/student/onboarding', label: 'Progress', icon: 'chart' }, { to: '/student/settings', label: 'Settings', icon: 'gear' }]} />;
 }
 function AdminShell() {
   const { user } = useAuth();
@@ -88,6 +91,7 @@ export default function App() {
         <Route path="/student" element={<StudentShell />}>
           <Route index element={<Dashboard />} />
           <Route path="application" element={<Application />} />
+          <Route path="onboarding" element={<Onboarding />} />
           <Route path="zeroq" element={<ZeroQStudent />} />
           <Route path="results" element={<Results />} />
           <Route path="timetable" element={<Timetable />} />
@@ -107,6 +111,7 @@ export default function App() {
             <Route path="applications/:id" element={<ApplicationDetail />} />
             <Route path="zeroq" element={<ZeroQDashboard />} />
             <Route path="zeroq/queue" element={<ZeroQQueue />} />
+            <Route path="zeroq-review" element={<ZeroQReview />} />
             <Route path="zeroq/scanner" element={<ZeroQScanner />} />
             <Route path="students" element={<Students />} />
             <Route path="students/:id" element={<StudentDetail />} />

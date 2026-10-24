@@ -60,10 +60,10 @@ export const StatusBadge = ({ status }) => {
   return <span className={`badge ${tone}`}>{label}</span>;
 };
 
-export function Modal({ title, onClose, children }) {
+export function Modal({ title, onClose, children, wide }) {
   return (
     <div className="overlay" onClick={onClose} role="presentation">
-      <div className="modal" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
+      <div className={`modal${wide ? ' wide' : ''}`} role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
         <div className="row between"><h2>{title}</h2><button className="icon-btn" aria-label="Close" onClick={onClose}>✕</button></div>
         {children}
       </div>

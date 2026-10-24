@@ -1,0 +1,26 @@
+/* Admission progress (student) and ZeroQ review (school). Reuses the app's tokens. */
+.ob-next { border-left: 4px solid var(--action); display: grid; gap: .4rem; } .ob-next > * + * { margin-top: 0; }
+.ob-stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; }
+.ob-stage { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .85rem; min-width: 0; display: grid; gap: .35rem; align-content: start; }
+.ob-stage b { font-size: .95rem; } .ob-stage small { color: var(--muted); overflow-wrap: anywhere; }
+.ob-stage.done { border-color: var(--green); } .ob-stage.action { border-color: var(--warning); } .ob-stage.blocked { border-color: var(--red); }
+.ob-subjects { display: grid; gap: .5rem; }
+.ob-subject-row { display: grid; grid-template-columns: 1fr 7rem auto; gap: .5rem; align-items: end; }
+@media (max-width: 520px) { .ob-subject-row { grid-template-columns: 1fr 5.5rem auto; } }
+.ob-doc { display: grid; gap: .5rem; padding: .85rem 0; border-top: 1px solid var(--border); }
+.ob-doc:first-of-type { border-top: 0; }
+.ob-doc .row { align-items: center; }
+.ob-reasons { margin: 0; padding-left: 1.1rem; color: var(--muted); font-size: .9rem; }
+.ob-note { background: var(--input-surface); border-radius: 8px; padding: .55rem .75rem; font-size: .92rem; overflow-wrap: anywhere; }
+.ob-check { display: grid; grid-template-columns: 6.5rem 1fr; gap: .6rem; font-size: .9rem; padding: .3rem 0; border-top: 1px solid var(--border); }
+.ob-check:first-of-type { border-top: 0; } .ob-check .badge { align-self: start; justify-self: start; }
+.ob-timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; font-size: .9rem; }
+.ob-timeline li { border-left: 2px solid var(--border); padding-left: .75rem; } .ob-timeline small { color: var(--muted); display: block; }
+.ob-tabs { display: flex; gap: .5rem; flex-wrap: wrap; }
+.ob-tabs button { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: .4rem .9rem; font: inherit; cursor: pointer; }
+.ob-tabs button.on { background: var(--action); color: var(--action-text); border-color: var(--action); }
+.ob-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; }
+.ob-tiles div { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .75rem; } .ob-tiles b { display: block; font-size: 1.4rem; } .ob-tiles span { color: var(--muted); font-size: .85rem; }
+.ob-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+.modal.wide { max-width: 680px; width: 100%; max-height: 88vh; overflow-y: auto; }
+.ob-guide { font-size: .9rem; color: var(--muted); }
