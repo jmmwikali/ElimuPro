@@ -15,6 +15,8 @@ import FeesAdmin from './pages/admin/Fees';
 import AnnouncementsAdmin from './pages/admin/Announcements';
 import Platform from './pages/admin/Platform';
 import Pricing from './pages/admin/Pricing';
+import Invoices from './pages/admin/Invoices';
+import Billing from './pages/admin/Billing';
 import Teachers from './pages/admin/Teachers';
 import Parents from './pages/admin/Parents';
 import ParentDashboard from './pages/parent/Dashboard';
@@ -42,10 +44,12 @@ const ADMIN_NAV = [
   { to: '/admin/zeroq', label: 'ZeroQ Admissions', icon: 'file' },
   { to: '/admin/students', label: 'Students', icon: 'users' }, { to: '/admin/teachers', label: 'Teachers', icon: 'book' }, { to: '/admin/parents', label: 'Parents', icon: 'users' }, { to: '/admin/classes', label: 'Classes & Streams', icon: 'school' },
   { to: '/admin/fees', label: 'Fees & Payments', icon: 'wallet' }, { to: '/admin/announcements', label: 'Announcements', icon: 'bell' },
+  { to: '/admin/billing', label: 'Billing', icon: 'wallet' },
 ];
 const BURSAR_NAV = [ADMIN_NAV[0], ADMIN_NAV.find((n) => n.to === '/admin/fees')];
 const PLATFORM_NAV = [
   { to: '/platform', label: 'Schools', icon: 'school', end: true }, { to: '/platform/pricing', label: 'Pricing', icon: 'wallet' },
+  { to: '/platform/invoices', label: 'Invoices', icon: 'file' },
 ];
 const PARENT_NAV = [
   { to: '/parent', label: 'My children', icon: 'users', end: true }, { to: '/parent/announcements', label: 'News', icon: 'bell' },
@@ -109,6 +113,7 @@ export default function App() {
             <Route path="parents" element={<Parents />} />
             <Route path="classes" element={<Classes />} />
             <Route path="announcements" element={<AnnouncementsAdmin />} />
+            <Route path="billing" element={<Billing />} />
           </Route>
         </Route>
       </Route>
@@ -135,6 +140,7 @@ export default function App() {
         <Route path="/platform" element={<AppShell nav={PLATFORM_NAV} brandLabel="ElimuPro Platform" />}>
           <Route index element={<Platform />} />
           <Route path="pricing" element={<Pricing />} />
+          <Route path="invoices" element={<Invoices />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
