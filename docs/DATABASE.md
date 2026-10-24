@@ -11,6 +11,7 @@ Use Flask-Migrate for database changes: run `flask --app run:app db upgrade` fro
 | Learners | `students`, `guardians`, `student_applications`, `application_documents` |
 | ZeroQ admissions | `zeroq_passes`, `zeroq_scans` |
 | Component pricing | `price_components`, `price_tiers` |
+| ZeroQ onboarding | `assessment_results`, `assessment_result_events`, `document_events`, `document_requirements`, `notifications`; `application_documents` extended with storage key, hash, status, version, verification JSON |
 | Component billing | `invoices` (price snapshot, unique per school/component/period), `payment_attempts` (one per STK push, unique idempotency key and charge id) |
 | Assessment | `exams`, `exam_results`, `timetable_entries` |
 | Staff | `teacher_assignments` (teacher user x class x subject; unique per triple; drives every teacher permission) |

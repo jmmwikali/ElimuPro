@@ -42,7 +42,7 @@ The payload has the form `ZEROQ1.<random-token>`. The token has 256 bits of gene
 
 ## Deliberately deferred
 
-The current clone has no private file-storage provider or document-upload endpoint. No ZeroQ document upload, signed URL, review/rejection workflow, medical-information collection, or file verification has been added. The existing `application_documents.file_url` is not used for private uploads by this module. A storage provider, private bucket policy, signed URL lifetime, malware scanning, retention, and reviewer permissions need approval before implementation.
+The first slice left out document uploads. They were added later (see "Student onboarding, documents and review" below) with a private local folder, signed 5-minute links, file-type and size validation, automated file checks and a reviewer workflow. Still deferred and needing approval: a production storage provider (private object storage), malware scanning, a retention and deletion policy, guardian consent for minors, medical-information collection, and any OCR or authenticity checking.
 
 Also not added in this slice: a new Admissions Officer role, finance/fee verification, parent notifications, SMS/email delivery, configurable admission states, analytics trends/processing-time metrics, a scan-history browser, offline synchronization, or PostgreSQL RLS. Existing ElimuNova roles remain unchanged. ZeroQ officers can complete approved/enrolled admissions; the slice does not automate admission decisions.
 
@@ -59,3 +59,15 @@ flask --app run:app db upgrade
 Run backend tests with `python -m pytest -q` from `backend/` and build the frontend with `npm run build` from `frontend/`. For local camera testing, serve the app on `http://localhost` and allow camera access. A deployed scanner requires HTTPS.
 
 Future integrations can connect ZeroQ to ElimuNova parent accounts, notifications, fee records, and reporting after their role, privacy, and data-retention boundaries are approved. Apex AI may summarize admissions trends, but must not make admission decisions.
+
+## Student onboarding, documents and review (added)
+
+Beyond the QR pass, ZeroQ now covers results entry, document upload with automated file checks, human review,
+progress tracking and in-app notifications. See [ZEROQ_AUDIT.md](ZEROQ_AUDIT.md) for what is and is not built.
+
+- **Students** (`/student/onboarding`, "Admission progress"): enter KJSEA results and submit them to their school, upload the documents the school asks for, see
+  where they are, what is missing, and what to do next. Wording never claims official verification.
+- **Schools** (`/admin/zeroq-review`): list the documents students must upload, work a prioritised review queue (approve, request correction, reject, escalate, note), verify results with a recorded basis.
+- **Storage**: files live in a private folder (`ZEROQ_UPLOAD_DIR`) with random names, never served directly; downloads use 5-minute signed links.
+  Mount a persistent volume or move to private object storage in production.
+- **Automated checks** confirm the file type from its bytes, that it opens, not password-protected, page count, photo resolution, duplicates. They do **not** read text, check fields or judge authenticity; every result lists what was not checked.

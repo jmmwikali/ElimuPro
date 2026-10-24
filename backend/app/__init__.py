@@ -50,6 +50,10 @@ def create_app(config_object=Config):
     def _404(e):
         return err("Not found", 404)
 
+    @app.errorhandler(413)
+    def _413(e):
+        return err("That upload is too large", 413)
+
     @app.errorhandler(405)
     def _405(e):
         return err("Method not allowed", 405)

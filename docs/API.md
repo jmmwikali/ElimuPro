@@ -78,3 +78,13 @@ School admin/principal/deputy (own school only, other schools' ids return 404): 
 POST `/billing/invoices/<id>/pay` (`phone`; sends the STK push, answers 202, never marks paid), POST `/billing/invoices/<id>/refresh` (asks Cyzora for the latest status).
 Public but signed: POST `/billing/webhooks/cyzora` (requires a valid `X-Cyzora-Signature`; 401 otherwise, 503 until configured).
 Invoice amounts are whole KES shillings; Cyzora receives cents. `pay` errors: 409 already paid or a prompt was just sent, 422 bad phone or provider refusal, 429 provider busy, 502 provider unreachable, 503 not configured.
+
+## ZeroQ onboarding, documents and review
+Student: GET/PUT `/zeroq/my/results` (`assessment_year`, `candidate_number`, `subjects: [{subject, result}]`), POST `/zeroq/my/results/<id>/submit`,
+GET `/zeroq/my/requirements`, GET `/zeroq/my/documents`, POST `/zeroq/my/documents` (multipart `doc_type`, `file`; PDF/JPEG/PNG/WebP up to `ZEROQ_MAX_UPLOAD_MB`),
+POST `/zeroq/my/documents/<id>/link` (signed 5-minute download path), GET `/zeroq/my/progress`, GET `/zeroq/my/notifications`, POST `/zeroq/my/notifications/read`.
+Public but signed: GET `/zeroq/documents/file?token=...` (410 when forged, expired or the file is gone).
+School admin/principal/deputy (own school only): GET/POST `/zeroq/requirements`, PATCH `/zeroq/requirements/<id>`, GET `/zeroq/review/summary`,
+GET `/zeroq/review/results[?status=needs_action|all|<status>]`, GET `/zeroq/review/results/<id>`, POST `/zeroq/review/results/<id>/action` (`start_review|request_info|verify|reject|fail`, `note`, `basis`),
+GET `/zeroq/review/documents[?status=needs_action|all|<status>&q=]`, GET `/zeroq/review/documents/<id>`, POST `/zeroq/review/documents/<id>/action` (`approve|request_correction|reject|escalate|note`, `note`), POST `/zeroq/review/documents/<id>/link`.
+Other schools' ids return 404. Uploads are limited to 10 per minute per student (429); oversized files return 413.
