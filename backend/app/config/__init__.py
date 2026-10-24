@@ -29,6 +29,12 @@ class Config:
     GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
     GEMINI_TIMEOUT = int(os.environ.get("GEMINI_TIMEOUT", 20))
     APEX_RATE_LIMIT_PER_MINUTE = int(os.environ.get("APEX_RATE_LIMIT_PER_MINUTE", 12))
+    # Cyzora Pay (M-Pesa). Both secrets stay server-side; empty = online payments disabled.
+    CYZORA_SECRET_KEY = os.environ.get("CYZORA_SECRET_KEY")  # sk_test_... or sk_live_...
+    CYZORA_WEBHOOK_SECRET = os.environ.get("CYZORA_WEBHOOK_SECRET")  # whsec_...
+    CYZORA_BASE_URL = os.environ.get("CYZORA_BASE_URL", "https://api.cyzora.co.ke/api/v1")
+    CYZORA_TIMEOUT = int(os.environ.get("CYZORA_TIMEOUT", 20))
+    CYZORA_RETRY_DELAY = float(os.environ.get("CYZORA_RETRY_DELAY", 1))  # seconds, doubles per retry on 429/409
 
 
 class TestConfig(Config):
@@ -39,3 +45,6 @@ class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     SQLALCHEMY_ENGINE_OPTIONS = {}
     GEMINI_API_KEY = None
+    CYZORA_SECRET_KEY = None
+    CYZORA_WEBHOOK_SECRET = None
+    CYZORA_RETRY_DELAY = 0

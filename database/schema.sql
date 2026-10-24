@@ -83,8 +83,8 @@ CREATE TABLE users (
 	FOREIGN KEY(school_id) REFERENCES schools (id),
 	UNIQUE (email)
 );
-CREATE INDEX ix_users_role ON users (role);
 CREATE INDEX ix_users_school_id ON users (school_id);
+CREATE INDEX ix_users_role ON users (role);
 
 CREATE TABLE announcements (
 	id SERIAL NOT NULL,
@@ -117,8 +117,33 @@ CREATE TABLE audit_logs (
 	FOREIGN KEY(school_id) REFERENCES schools (id),
 	FOREIGN KEY(user_id) REFERENCES users (id)
 );
-CREATE INDEX ix_audit_logs_school_id ON audit_logs (school_id);
 CREATE INDEX ix_audit_logs_user_id ON audit_logs (user_id);
+CREATE INDEX ix_audit_logs_school_id ON audit_logs (school_id);
+
+CREATE TABLE invoices (
+	id SERIAL NOT NULL,
+	school_id INTEGER NOT NULL,
+	number VARCHAR(30) NOT NULL,
+	component_key VARCHAR(40) NOT NULL,
+	description VARCHAR(200) NOT NULL,
+	quantity INTEGER NOT NULL,
+	student_count INTEGER,
+	unit_price NUMERIC(12, 2) NOT NULL,
+	amount NUMERIC(12, 2) NOT NULL,
+	currency VARCHAR(3) NOT NULL,
+	reference VARCHAR(60) NOT NULL,
+	status VARCHAR(10) NOT NULL,
+	created_by INTEGER,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	paid_at TIMESTAMP WITHOUT TIME ZONE,
+	PRIMARY KEY (id),
+	UNIQUE (school_id, component_key, reference),
+	FOREIGN KEY(school_id) REFERENCES schools (id),
+	UNIQUE (number),
+	FOREIGN KEY(created_by) REFERENCES users (id)
+);
+CREATE INDEX ix_invoices_status ON invoices (status);
+CREATE INDEX ix_invoices_school_id ON invoices (school_id);
 
 CREATE TABLE price_components (
 	id SERIAL NOT NULL,
@@ -208,6 +233,33 @@ CREATE TABLE fee_structures (
 	FOREIGN KEY(class_id) REFERENCES classes (id)
 );
 CREATE INDEX ix_fee_structures_school_id ON fee_structures (school_id);
+
+CREATE TABLE payment_attempts (
+	id SERIAL NOT NULL,
+	invoice_id INTEGER NOT NULL,
+	school_id INTEGER NOT NULL,
+	provider VARCHAR(20) NOT NULL,
+	provider_charge_id VARCHAR(80),
+	idempotency_key VARCHAR(80) NOT NULL,
+	phone VARCHAR(15) NOT NULL,
+	amount_cents BIGINT NOT NULL,
+	status VARCHAR(20) NOT NULL,
+	provider_status VARCHAR(30),
+	receipt VARCHAR(60),
+	error VARCHAR(255),
+	created_by INTEGER,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(invoice_id) REFERENCES invoices (id),
+	FOREIGN KEY(school_id) REFERENCES schools (id),
+	UNIQUE (provider_charge_id),
+	UNIQUE (idempotency_key),
+	FOREIGN KEY(created_by) REFERENCES users (id)
+);
+CREATE INDEX ix_payment_attempts_school_id ON payment_attempts (school_id);
+CREATE INDEX ix_payment_attempts_status ON payment_attempts (status);
+CREATE INDEX ix_payment_attempts_invoice_id ON payment_attempts (invoice_id);
 
 CREATE TABLE price_tiers (
 	id SERIAL NOT NULL,

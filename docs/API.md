@@ -71,3 +71,10 @@ A limit is **inclusive**: a school with exactly 1,000 students pays the "up to 1
 Amounts are 0 to 10,000,000 with at most 2 decimals. Nothing is written until validation passes, and each edit is written to the audit log with the before and after values.
 Until a component is first edited it uses the launch default from `services/pricing.py`; the first edit creates its row. Billing unit and currency are fixed per component.
 `services.pricing.price_for(component, students)` returns the unit price for a school size and is what invoicing should call.
+
+## Billing
+See [BILLING.md](BILLING.md). Super admin: GET/POST `/billing/invoices` (`school_id`, `component_key`, `quantity`, `reference`), POST `/billing/invoices/<id>/void`.
+School admin/principal/deputy (own school only, other schools' ids return 404): GET `/billing/invoices`, GET `/billing/invoices/<id>`,
+POST `/billing/invoices/<id>/pay` (`phone`; sends the STK push, answers 202, never marks paid), POST `/billing/invoices/<id>/refresh` (asks Cyzora for the latest status).
+Public but signed: POST `/billing/webhooks/cyzora` (requires a valid `X-Cyzora-Signature`; 401 otherwise, 503 until configured).
+Invoice amounts are whole KES shillings; Cyzora receives cents. `pay` errors: 409 already paid or a prompt was just sent, 422 bad phone or provider refusal, 429 provider busy, 502 provider unreachable, 503 not configured.
