@@ -11,7 +11,7 @@ export default function Dashboard() {
   const r = d.latest_result;
   return (
     <div className="stack">
-      <div className="greet">
+      <div className="greet card">
         <div className="avatar" style={{ width: 56, height: 56, fontSize: '1.2rem' }}>{initials(s.full_name)}</div>
         <div>
           <h1>{greeting()}, {s.first_name}</h1>

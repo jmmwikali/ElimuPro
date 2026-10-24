@@ -67,3 +67,43 @@ def test_manifest_and_index_carry_the_new_name():
 def test_brand_config_exists_for_the_frontend():
     text = (ROOT / "frontend/src/config/brand.js").read_text()
     assert "name: 'ElimuNova'" in text and "REACT_APP_BRAND_TAGLINE" in text
+
+
+# ---------- Nova colours and glass ----------
+def _luminance(hex_colour):
+    channels = [int(hex_colour.lstrip("#")[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    lin = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in channels]
+    return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+
+
+def _contrast(a, b):
+    hi, lo = sorted((_luminance(a), _luminance(b)), reverse=True)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def test_theme_uses_the_nova_logo_colours_and_filled_buttons_stay_readable():
+    css = (ROOT / "frontend/src/index.css").read_text()
+    for colour in ("#8A4DFF", "#6B5BFF", "#3B84FF", "#1A1F36"):  # purple, indigo, blue, ink from the brand sheet
+        assert colour in css
+    assert "#00A8FF" not in css and "#B8F500" not in css  # the old cyan and lime are gone
+    stops = re.search(r"--nova-grad: linear-gradient\(([^;]+)\);", css).group(1)
+    shades = re.findall(r"#[0-9A-Fa-f]{6}", stops)
+    assert len(shades) == 3
+    for shade in shades:  # white button text must pass WCAG AA on every stop of the button gradient
+        assert _contrast("#FFFFFF", shade) >= 4.5, shade
+
+
+def test_glass_theme_is_wired_in_with_accessible_fallbacks():
+    glass = (ROOT / "frontend/src/glass.css").read_text()
+    for needle in (".theme-student", ".profile-hero", ".profile-tile", "backdrop-filter", "prefers-reduced-transparency",
+                   "prefers-reduced-motion", "@supports not", "@media print"):
+        assert needle in glass, needle
+    assert "import './glass.css'" in (ROOT / "frontend/src/index.js").read_text()
+
+
+def test_student_screens_get_the_stronger_glass_theme():
+    app = (ROOT / "frontend/src/App.js").read_text()
+    assert app.count('theme="student"') == 2  # enrolled students and applicants
+    assert "theme-${theme}" in (ROOT / "frontend/src/layouts/AppShell.js").read_text()
+    profile = (ROOT / "frontend/src/pages/student/Pages.js").read_text()
+    assert "profile-hero" in profile and "profile-ring" in profile

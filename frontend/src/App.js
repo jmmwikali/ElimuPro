@@ -67,8 +67,8 @@ const TEACHER_NAV = [
 function StudentShell() {
   const { user } = useAuth();
   return user.is_enrolled
-    ? <AppShell nav={STUDENT_SIDE} bottom={STUDENT_NAV} />
-    : <AppShell nav={APPLICANT_SIDE} bottom={[{ to: '/student/application', label: 'Application', icon: 'file' }, { to: '/student/onboarding', label: 'Progress', icon: 'chart' }, { to: '/student/settings', label: 'Settings', icon: 'gear' }]} />;
+    ? <AppShell nav={STUDENT_SIDE} bottom={STUDENT_NAV} theme="student" />
+    : <AppShell theme="student" nav={APPLICANT_SIDE} bottom={[{ to: '/student/application', label: 'Application', icon: 'file' }, { to: '/student/onboarding', label: 'Progress', icon: 'chart' }, { to: '/student/settings', label: 'Settings', icon: 'gear' }]} />;
 }
 function AdminShell() {
   const { user } = useAuth();

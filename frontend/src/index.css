@@ -1,34 +1,39 @@
 :root {
        color-scheme: dark;
-       --midnight: #07111F;
-       --navy: #0D1B2E;
+       /* Nova logo colours: purple, indigo, blue, ink. Deep indigo-navy bases keep them vivid. */
+       --nova-purple: #8A4DFF; --nova-indigo: #6B5BFF; --nova-blue: #3B84FF; --nova-ink: #1A1F36;
+       --nova-grad: linear-gradient(135deg, #8A4DFF 0%, #6B5BFF 48%, #2F6DE6 100%);      /* fills that carry white text (all stops >= 4.5:1) */
+       --nova-grad-logo: linear-gradient(135deg, #8A4DFF 0%, #6B5BFF 50%, #3B84FF 100%); /* decoration only, exactly the logo */
+       --nova-text-grad: linear-gradient(90deg, #B08CFF, #6FA6FF);
+       --midnight: #0A0D22;
+       --navy: #12163A;
        --slate-navy: var(--navy);
-       --blue: #00A8FF;
-       --steel-blue: #267CFF;
-       --lime: #B8F500;
+       --blue: #3B84FF;
+       --steel-blue: #6B5BFF;
        --gold: #FFB52E;
-       --paper-blue: #B9EEFF;
-       --text: #F4F9FF;
-       --muted: #9DB2C7;
-       --border: #24415C;
+       --paper-blue: #C9B8FF;
+       --text: #F5F7FF;
+       --muted: #A3AECB;
+       --border: #2E3470;
        --green: #32D583;
        --warning: #FFB52E;
        --red: #FF5C6C;
        --bg: var(--midnight);
        --surface-solid: var(--navy);
        --surface-raised-solid: var(--navy);
-       --surface: rgba(13, 27, 46, .88);
-       --surface-raised: rgba(13, 27, 46, .94);
-       --input-surface: rgba(7, 17, 31, .82);
+       --surface: rgba(18, 22, 58, .88);
+       --surface-raised: rgba(18, 22, 58, .94);
+       --input-surface: rgba(10, 13, 34, .72);
        --brand: var(--navy);
-       --action: var(--blue);
-       --action-text: var(--midnight);
-       --pale: rgba(185, 238, 255, .12);
-       --soft: rgba(38, 124, 255, .12);
+       --action: #86B3FF;               /* links, focus, accents: a light logo blue that reads on the dark base */
+       --action-bg: var(--nova-grad);
+       --action-text: #FFFFFF;
+       --pale: rgba(201, 184, 255, .12);
+       --soft: rgba(107, 91, 255, .20);
        --success-soft: rgba(50, 213, 131, .2);
        --warning-soft: rgba(255, 181, 46, .2);
        --danger-soft: rgba(255, 92, 108, .2);
-       --info-soft: rgba(38, 124, 255, .2);
+       --info-soft: rgba(59, 132, 255, .24);
        --shadow: 0 8px 24px rgba(0, 0, 0, .22);
   --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
@@ -48,7 +53,7 @@ p { margin: 0 0 .75rem; } a { color: var(--action); text-decoration: none; }
 
 /* buttons & forms */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 44px; padding: 0 1.1rem;
-       border-radius: 8px; border: 1px solid transparent; background: var(--action); color: var(--action-text); font: 600 .95rem var(--font); cursor: pointer;
+       border-radius: 8px; border: 1px solid transparent; background: var(--action-bg); color: var(--action-text); font: 600 .95rem var(--font); cursor: pointer;
        transition: background-color .18s ease, border-color .18s ease, filter .18s ease, transform .18s ease; }
 .btn:hover:not(:disabled) { filter: brightness(1.12); }
 .btn:active:not(:disabled) { filter: brightness(.92); transform: translateY(1px); }
@@ -64,7 +69,7 @@ p { margin: 0 0 .75rem; } a { color: var(--action); text-decoration: none; }
          background: var(--input-surface); color: var(--text); font: inherit; }
 textarea.input { min-height: 96px; resize: vertical; }
 .input::placeholder { color: var(--muted); opacity: 1; }
-.input:focus { border-color: var(--action); box-shadow: 0 0 0 3px rgba(0, 168, 255, .3); }
+.input:focus { border-color: var(--action); box-shadow: 0 0 0 3px rgba(107, 91, 255, .38); }
 .input.invalid { border-color: var(--red); }
 .field .err { color: var(--red); font-size: .82rem; margin-top: .25rem; }
 .grid2 { display: grid; gap: 0 1rem; grid-template-columns: 1fr; }
@@ -95,7 +100,7 @@ th { background: var(--surface-raised); color: var(--text); font-weight: 500; fo
 .tabs { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .25rem; }
 .tab { padding: .4rem .9rem; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text);
        font: 500 .85rem var(--font); cursor: pointer; white-space: nowrap; min-height: 36px; }
-.tab.active { background: var(--action); color: var(--action-text); border-color: var(--action); }
+.tab.active { background: var(--action-bg); color: var(--action-text); border-color: transparent; }
 .alert { padding: .7rem .9rem; border-radius: 8px; font-size: .9rem; margin-bottom: 1rem; }
 .alert.error { background: var(--danger-soft); color: var(--text); border-left: 3px solid var(--red); }
 .alert.success { background: var(--success-soft); color: var(--text); border-left: 3px solid var(--green); }
@@ -104,10 +109,10 @@ th { background: var(--surface-raised); color: var(--text); font-weight: 500; fo
 .spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--action); border-radius: 50%;
            animation: spin .8s linear infinite; margin: 2rem auto; } @keyframes spin { to { transform: rotate(360deg); } }
 .steps { display: flex; gap: .4rem; margin-bottom: 1.25rem; } .steps div { flex: 1; height: 5px; border-radius: 3px; background: var(--border); }
-.steps div.on { background: var(--action); }
+.steps div.on { background: var(--nova-grad-logo); }
 
 /* modal (bottom sheet on phones) */
-.overlay { position: fixed; inset: 0; background: rgba(7, 17, 31, .72); display: flex; align-items: flex-end; justify-content: center; z-index: 50; }
+.overlay { position: fixed; inset: 0; background: rgba(10, 13, 34, .72); display: flex; align-items: flex-end; justify-content: center; z-index: 50; }
 .modal { background: var(--surface-raised); border: 1px solid var(--border); box-shadow: var(--shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
          width: 100%; max-height: 90vh; overflow-y: auto; border-radius: 16px 16px 0 0; padding: 1.25rem; padding-bottom: calc(1.25rem + var(--safe-b)); }
 @media (min-width: 640px) { .overlay { align-items: center; } .modal { max-width: 480px; border-radius: 12px; } }
@@ -116,7 +121,7 @@ th { background: var(--surface-raised); color: var(--text); font-weight: 500; fo
 .public { min-height: 100%; display: flex; flex-direction: column; }
 .public header { background: var(--surface-raised); color: var(--text); border-bottom: 1px solid var(--border); padding: .9rem 1.25rem; display: flex; align-items: center; justify-content: space-between;
                  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-.brand { font: 700 1.25rem var(--serif); color: var(--text); } .brand b { color: var(--action); font-weight: 700; }
+.brand { font: 700 1.25rem var(--serif); color: var(--text); } .brand b { background: var(--nova-text-grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; }
 .brand-lockup { display: inline-flex; align-items: center; gap: .55rem; } .brand-mark { width: 28px; height: 28px; border-radius: 7px; background: #fff; object-fit: cover; flex: none; }
 .hero { background: var(--bg); color: var(--text); padding: 2.5rem 1.25rem 3rem; } .hero h1 { font-size: 2rem; max-width: 20ch; }
 .hero p { color: var(--muted); max-width: 46ch; }
@@ -135,11 +140,11 @@ th { background: var(--surface-raised); color: var(--text); font-weight: 500; fo
 .bottomnav a { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: .5rem 0; color: var(--muted); font-size: .68rem; min-height: 54px; }
 .bottomnav a.active { color: var(--paper-blue); font-weight: 600; }
 .sidenav { display: none; }
-.drawer { position: fixed; inset: 0 30% 0 0; max-width: 280px; background: rgba(13, 27, 46, .96); border-right: 1px solid var(--border); z-index: 40; padding: 1rem; overflow-y: auto;
+.drawer { position: fixed; inset: 0 30% 0 0; max-width: 280px; background: rgba(18, 22, 58, .96); border-right: 1px solid var(--border); z-index: 40; padding: 1rem; overflow-y: auto;
           backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
-.drawer-bg { position: fixed; inset: 0; background: rgba(7, 17, 31, .68); z-index: 30; }
+.drawer-bg { position: fixed; inset: 0; background: rgba(10, 13, 34, .68); z-index: 30; }
 .navlink { display: flex; align-items: center; gap: .7rem; padding: .7rem .8rem; border-radius: 8px; color: rgba(255,255,255,.78); min-height: 44px; }
-.navlink.active { background: var(--action); color: var(--action-text); } .navlink svg { flex: none; }
+.navlink.active { background: var(--action-bg); color: var(--action-text); box-shadow: 0 6px 18px rgba(107, 91, 255, .35); } .navlink svg { flex: none; }
 .greet { display: flex; align-items: center; gap: .9rem; margin-bottom: 1rem; }
 .greet h1 { margin: 0; font-size: 1.35rem; }
 .timeline-row { display: flex; gap: .75rem; padding: .55rem 0; border-bottom: 1px solid var(--border); } .timeline-row:last-child { border: 0; }
@@ -148,7 +153,7 @@ th { background: var(--surface-raised); color: var(--text); font-weight: 500; fo
 
 @media (min-width: 900px) {
   .shell { flex-direction: row; } .shell.has-side .topbar .menu, .bottomnav { display: none; }
-       .sidenav { display: block; width: 240px; background: rgba(13, 27, 46, .96); border-right: 1px solid var(--border); padding: 1rem; position: sticky; top: 0; height: 100vh; flex: none;
+       .sidenav { display: block; width: 240px; background: rgba(18, 22, 58, .96); border-right: 1px solid var(--border); padding: 1rem; position: sticky; top: 0; height: 100vh; flex: none;
                                            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   .main-col { flex: 1; min-width: 0; display: flex; flex-direction: column; } .content { padding-bottom: 2rem; padding: 1.5rem; }
        .topbar { position: static; background: var(--surface-raised); color: var(--text); border-bottom: 1px solid var(--border); }

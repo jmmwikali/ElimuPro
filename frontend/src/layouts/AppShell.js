@@ -8,7 +8,7 @@ import { initials } from '../utils/format';
 
 /* One responsive shell, two navigation sets. Phones: bottom tab bar (student) or slide-in drawer (admin).
    Tablets/laptops: fixed sidebar. */
-export default function AppShell({ nav, bottom, brandLabel }) {
+export default function AppShell({ nav, bottom, brandLabel, theme }) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function AppShell({ nav, bottom, brandLabel }) {
   ));
 
   return (
-    <div className="shell has-side">
+    <div className={`shell has-side${theme ? ` theme-${theme}` : ''}`}>
       <aside className="sidenav" aria-label="Main navigation">
         <div className="brand" style={{ marginBottom: '1.25rem', color: "#fff" }}><BrandLockup /></div>
         {links()}
