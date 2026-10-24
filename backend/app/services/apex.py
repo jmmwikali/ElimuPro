@@ -85,7 +85,10 @@ Renewal happens for the next academic year.""",
         "name": "Apex AI",
         "knowledge": """\
 Apex AI is ElimuPro's AI assistant (this assistant). It answers questions about ElimuPro and its components.
-Plans: Free and Pro. Pricing: {pricing} Apex AI plans are priced separately from Academic Analytics,
+Plans: Free and Pro. Pro can be paid monthly or yearly; the yearly plan is a discount on paying monthly.
+Pricing:
+{pricing}
+Apex AI plans are priced separately from Academic Analytics,
 Financial Analytics, ZeroQ and CareerGPS and are not bundled into them.
 Apex AI cannot see student records, change data, take payments or make admission decisions.""",
     },
@@ -99,7 +102,7 @@ PRICE_KEYS = {
     "zeroq_admissions": ["zeroq_admissions"],
     "zeroq_transfers": ["zeroq_transfers"],
     "careergps": ["careergps"],
-    "apex_ai": ["apex_ai_pro"],
+    "apex_ai": ["apex_ai_pro_monthly", "apex_ai_pro_yearly"],
 }
 
 RULES = """\

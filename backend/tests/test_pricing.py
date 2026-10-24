@@ -29,7 +29,8 @@ def test_analytics_boundary_has_no_gap(app, students, expected):
 def test_defaults_match_launch_prices(app):
     prices = {c["key"]: pricing.price_for(c, 10) for c in pricing.get_components()}
     assert prices == {"academic_analytics": 10000, "financial_analytics": 10000, "zeroq_admissions": 450,
-                      "zeroq_transfers": 400, "careergps": 1000, "apex_ai_pro": 5}
+                      "zeroq_transfers": 400, "careergps": 1000, "apex_ai_pro_monthly": 5,
+                      "apex_ai_pro_yearly": 40}
 
 
 def test_inactive_component_has_no_price(app, client, super_admin):
@@ -147,7 +148,9 @@ def test_apex_quotes_live_prices(client, super_admin, app):
     academic = apex.system_prompt("academic_analytics")
     assert "up to 800 students" in academic and "KSh 14,000" in academic
     general = apex.system_prompt("general")
-    assert "KSh 450 per admission" in general and "KSh 1,250" in general and "USD 5" in general
+    assert "KSh 450 per admission" in general and "KSh 1,250" in general
+    assert "USD 5 per month" in general and "USD 40 per year" in general
+    assert "USD 5 per month" in apex.system_prompt("apex_ai") and "yearly plan is a discount" in apex.system_prompt("apex_ai")
 
 
 def test_apex_says_when_a_component_is_off_sale(client, super_admin, app):

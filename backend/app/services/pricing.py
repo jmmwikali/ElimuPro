@@ -10,7 +10,8 @@ BILLING_UNITS = {
     "per_admission": "per admission",
     "per_transfer": "per transfer",
     "per_student_year": "per student per academic year",
-    "per_plan": "per plan",
+    "per_month": "per month",
+    "per_year": "per year",
 }
 CURRENCY_LABEL = {"KES": "KSh", "USD": "USD"}
 MAX_AMOUNT = Decimal("10000000")
@@ -31,8 +32,10 @@ DEFAULTS = [
      "currency": "KES", "amount": Decimal("400")},
     {"key": "careergps", "name": "CareerGPS", "billing_unit": "per_student_year",
      "currency": "KES", "amount": Decimal("1000")},
-    {"key": "apex_ai_pro", "name": "Apex AI Pro", "billing_unit": "per_plan",
+    {"key": "apex_ai_pro_monthly", "name": "Apex AI Pro (monthly)", "billing_unit": "per_month",
      "currency": "USD", "amount": Decimal("5")},
+    {"key": "apex_ai_pro_yearly", "name": "Apex AI Pro (yearly)", "billing_unit": "per_year",
+     "currency": "USD", "amount": Decimal("40")},
 ]
 
 

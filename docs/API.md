@@ -64,7 +64,7 @@ The QR value is an opaque, one-time token; scan results are validated server-sid
 
 ## Pricing
 Super admin only (every other role gets 403): GET `/pricing` lists every component with its current price; PUT `/pricing/<key>` edits one.
-Keys: `academic_analytics`, `financial_analytics`, `zeroq_admissions`, `zeroq_transfers`, `careergps`, `apex_ai_pro`.
+Keys: `academic_analytics`, `financial_analytics`, `zeroq_admissions`, `zeroq_transfers`, `careergps`, `apex_ai_pro_monthly` (USD 5 per month), `apex_ai_pro_yearly` (USD 40 per year).
 PUT accepts `is_active`, `description`, `name`, plus `amount` for a flat component or `tiers` for a tiered one (sending the wrong one is a 422).
 `tiers` is a list of `{up_to_students, amount}`: 2 to 6 bands, limits strictly increasing, and the last band has `up_to_students: null` (no upper limit).
 A limit is **inclusive**: a school with exactly 1,000 students pays the "up to 1,000" band, so no school size falls in a gap.
