@@ -267,6 +267,38 @@ def update_requirement(req_id):
     return ok(row.to_dict())
 
 
+# =============================== school: pass rules ===============================
+SETTING_FIELDS = {"require_verified_results": "zeroq_require_results", "require_approved_documents": "zeroq_require_documents"}
+
+
+def _settings(school):
+    return {api_name: getattr(school, column) for api_name, column in SETTING_FIELDS.items()}
+
+
+@bp.get("/settings")
+@roles_required(*ADMIN_ROLES)
+def get_settings():
+    return ok(_settings(g.user.school))
+
+
+@bp.patch("/settings")
+@roles_required(*ADMIN_ROLES)
+def update_settings():
+    payload = request.get_json(silent=True) or {}
+    changes = {k: payload[k] for k in SETTING_FIELDS if k in payload}
+    if not changes:
+        return err("Nothing to update", 422)
+    bad = {k: "Must be true or false" for k, v in changes.items() if not isinstance(v, bool)}
+    if bad:
+        return err("Please fix the highlighted fields", 422, bad)
+    before = _settings(g.user.school)
+    for k, v in changes.items():
+        setattr(g.user.school, SETTING_FIELDS[k], v)
+    audit("zeroq.settings.updated", "school", g.user.school_id, {"before": before, "after": _settings(g.user.school)})
+    db.session.commit()
+    return ok(_settings(g.user.school))
+
+
 # =============================== school: review ===============================
 def _person(user_id):
     user = db.session.get(User, user_id) if user_id else None

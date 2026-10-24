@@ -6,7 +6,7 @@ Use Flask-Migrate for database changes: run `flask --app run:app db upgrade` fro
 
 | Group | Tables |
 |---|---|
-| Platform | `schools`, `users` (role column; `school_id` NULL only for super admin), `audit_logs` |
+| Platform | `schools` (incl. `zeroq_require_results`, `zeroq_require_documents`: the per-school ZeroQ pass rules, default true), `users` (role column; `school_id` NULL only for super admin), `audit_logs` |
 | Academic structure | `academic_years`, `terms`, `classes`, `streams`, `subjects`, `grade_bands` (school-configurable grading) |
 | Learners | `students`, `guardians`, `student_applications`, `application_documents` |
 | ZeroQ admissions | `zeroq_passes`, `zeroq_scans` |

@@ -147,6 +147,32 @@ function Results({ onChanged }) {
   );
 }
 
+function PassRules() {
+  const { data, reload } = useFetch('/zeroq/settings');
+  const [msg, setMsg] = useState({});
+  const set = async (key, value) => {
+    setMsg({});
+    try { await api.patch('/zeroq/settings', { [key]: value }); reload(); setMsg({ type: 'success', text: 'Saved.' }); }
+    catch (e) { setMsg({ type: 'error', text: e.message }); }
+  };
+  if (!data) return null;
+  return (
+    <div className="card stack">
+      <h3 style={{ margin: 0 }}>When a student can get a ZeroQ pass</h3>
+      <p className="muted small" style={{ margin: 0 }}>A pass is issued only after you have approved the admission and the checks below are met. Automated file checks never count: a person must verify or approve.</p>
+      <Alert type={msg.type}>{msg.text}</Alert>
+      <label className="row" style={{ gap: '.6rem', alignItems: 'flex-start' }}>
+        <input type="checkbox" checked={data.require_verified_results} onChange={(e) => set('require_verified_results', e.target.checked)} />
+        <span>KJSEA results verified by the school<br /><span className="small muted">Turn this off for grades whose students do not sit the KJSEA.</span></span>
+      </label>
+      <label className="row" style={{ gap: '.6rem', alignItems: 'flex-start' }}>
+        <input type="checkbox" checked={data.require_approved_documents} onChange={(e) => set('require_approved_documents', e.target.checked)} />
+        <span>Every required document approved<br /><span className="small muted">Only documents marked required below count. Optional ones never block a pass.</span></span>
+      </label>
+    </div>
+  );
+}
+
 function Requirements() {
   const list = useFetch('/zeroq/requirements');
   const [f, setF] = useState({ doc_type: '', label: '', instructions: '', required: true });
@@ -160,6 +186,7 @@ function Requirements() {
   const patch = async (r, body) => { setMsg({}); try { await api.patch(`/zeroq/requirements/${r.id}`, body); list.reload(); } catch (e) { setMsg({ type: 'error', text: e.message }); } };
   return (
     <div className="stack">
+      <PassRules />
       <p className="muted small" style={{ margin: 0 }}>The documents your students are asked to upload. Use the official forms your school issues; ZeroQ does not supply forms.</p>
       <Alert type={msg.type}>{msg.text}</Alert>
       {list.loading && !list.data ? <Loading /> : list.error ? <ErrorState error={list.error} onRetry={list.reload} /> : list.data.length === 0 ? <div className="card"><Empty title="No documents listed yet" /></div> : (

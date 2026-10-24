@@ -88,3 +88,7 @@ School admin/principal/deputy (own school only): GET/POST `/zeroq/requirements`,
 GET `/zeroq/review/results[?status=needs_action|all|<status>]`, GET `/zeroq/review/results/<id>`, POST `/zeroq/review/results/<id>/action` (`start_review|request_info|verify|reject|fail`, `note`, `basis`),
 GET `/zeroq/review/documents[?status=needs_action|all|<status>&q=]`, GET `/zeroq/review/documents/<id>`, POST `/zeroq/review/documents/<id>/action` (`approve|request_correction|reject|escalate|note`, `note`), POST `/zeroq/review/documents/<id>/link`.
 Other schools' ids return 404. Uploads are limited to 10 per minute per student (429); oversized files return 413.
+
+ZeroQ pass rules: GET/PATCH `/zeroq/settings` (school admin/principal/deputy; booleans `require_verified_results`, `require_approved_documents`; audited).
+`GET /zeroq/my` now also returns `ready` and `blockers` (plain sentences), and `POST /zeroq/my/pass` answers 409 with `errors.blockers` until the school's rules are met.
+A successful scan includes `student.requirements` (`results_verified`, `documents_approved`, `required_documents`).

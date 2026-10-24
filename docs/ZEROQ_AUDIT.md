@@ -111,7 +111,7 @@ and could be reused for student purchases later, but no shopping model exists.
 | Unique credential, secure student association, school id, status, issue date, expiry, revocation | PASS | `zeroq_passes`; token hashed with SHA-256; 256-bit random token. |
 | Protected verification endpoint | PASS | `POST /zeroq/scan` (school staff only, school-bound). |
 | No sensitive data inside the QR | PASS | Opaque token; `test_student_pass_is_opaque_and_scan_is_one_time`. |
-| Issued only after requirements are met | PARTIAL | Requires the school to have approved and enrolled the application (a human decision). It does **not** check that results are verified or documents approved. Gating on those is a policy choice for you. |
+| Issued only after requirements are met | PASS | The school must have approved and enrolled the application, **and** (both rules on by default, each switchable per school) the student's KJSEA results must be verified by school staff and every required document approved by a person. Automated checks never satisfy a rule. The student sees exactly what is outstanding; a blocked student keeps any pass they already hold; scanning staff see whether results and documents are verified. `services/zeroq_gate.py`, `tests/test_zeroq_gate.py` (15 tests) and a real browser run. A pass issued earlier is not withdrawn if a document is later un-approved; staff are warned at the scan instead. |
 | Valid / expired / revoked / used states shown to staff | PASS | Existing tests (4 passing). |
 | Student views the card on screen | PASS | `/student/zeroq`. |
 | Print-ready PDF, wallet size 85.6 x 54 mm, branding | MISSING | A print stylesheet exists but there is no print or download button on the ZeroQ page and no card layout. The QR is shown once at issue (the server keeps only a hash), so a reload needs a new pass. |
@@ -193,8 +193,9 @@ should behave the same.
 | Q School isolation | PASS | Results, documents, links, requirements, summaries. |
 | R Mobile | PARTIAL | New pages checked at 390 px: no horizontal overflow, uploads and forms usable. The camera scanner was not re-tested on a device (NOT TESTED). |
 
-Automated suite: 226 tests passing in total, of which 54 are new for this module. I also deliberately broke five protections (another student's
-document link, file-type check, link expiry, the verification-basis requirement, school scoping) and confirmed a test fails each time.
+Automated suite: 244 tests passing in total, of which 69 are new for ZeroQ (54 for onboarding, documents and review; 15 for the pass rules). I also deliberately broke eight protections (another student's
+document link, file-type check, link expiry, the verification-basis requirement, school scoping, the pass gate being skipped,
+automated checks counted as approval, and the gate running after an old pass is revoked) and confirmed a test fails each time.
 
 ## 4. What exists but is simulated or mock
 
@@ -220,7 +221,7 @@ None of the ZeroQ-specific ones. Existing optional integrations: Gemini (Apex AI
 
 ## 7. Recommended next steps, in order
 
-1. Decide the tenancy question and the policy for gating the QR pass on verified results and approved documents.
+1. Decide the tenancy question for pre-placement students. (The QR pass gate is decided and built: verified results and approved documents, switchable per school.)
 2. Pick an OCR provider and add it behind the existing check pipeline (`services/zeroq_documents.run_checks`): the
    "not performed" list shrinks as checks are added.
 3. Print-ready wallet-size QR card (PDF) and a download button.

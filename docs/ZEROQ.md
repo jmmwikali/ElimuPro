@@ -71,3 +71,17 @@ progress tracking and in-app notifications. See [ZEROQ_AUDIT.md](ZEROQ_AUDIT.md)
 - **Storage**: files live in a private folder (`ZEROQ_UPLOAD_DIR`) with random names, never served directly; downloads use 5-minute signed links.
   Mount a persistent volume or move to private object storage in production.
 - **Automated checks** confirm the file type from its bytes, that it opens, not password-protected, page count, photo resolution, duplicates. They do **not** read text, check fields or judge authenticity; every result lists what was not checked.
+
+## Pass rules (who may get a QR pass)
+
+A student is issued a ZeroQ pass only when their school has approved the admission **and**, by default:
+1. their latest KJSEA results have been verified by school staff, and
+2. every document the school marks required has been approved by a person.
+
+Schools switch each rule on or off under ZeroQ Review > Required documents > "When a student can get a ZeroQ pass"
+(for example, turn the results rule off for grades whose students do not sit the KJSEA). Both rules are on for every new
+school. Automated file checks never satisfy a rule. The student's ZeroQ page lists exactly what is outstanding and
+links to Admission progress; the check runs before any existing pass is replaced, so a blocked student keeps the pass
+they hold. When staff scan a pass they also see whether results and documents are verified, because they can change after
+issue. To try the pass flow with the demo data, either verify a demo student's results and approve their required
+documents, or switch the two rules off for the demo school.

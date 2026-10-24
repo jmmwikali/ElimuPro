@@ -43,8 +43,8 @@ the site or to Apex AI's knowledge, so nothing claims features that are not buil
 
 ## Logo notes
 
-- Two marks were supplied: the "N" (brand sheet, app icon, vertical logos) and an "E" horizontal logo from Meta AI. The
-  brand sheet uses the N throughout, so the N is the official mark here. Tell me if the E should be used instead.
+- Two marks were supplied: the "N" (brand sheet, app icon, vertical logos) and an "E" horizontal logo from Meta AI.
+  **Confirmed: the N is the official ElimuNova mark.** The E is not used anywhere.
 - The supplied images are phone screenshots. The crops are good for icons, the header and share previews. Request
   clean vector or transparent-background files from the designer for print work; `docs/brand/` holds a reference copy
   of the brand sheet (palette: purple #8A4DFF, indigo #6B5BFF, blue #3B84FF, ink #1A1F36).
