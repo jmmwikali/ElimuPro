@@ -10,7 +10,7 @@ from app.extensions import db
 
 app = create_app(TestConfig)
 with app.app_context():
-    out = ["-- ElimuPro PostgreSQL schema (generated from backend/app/models by export_schema.py)", ""]
+    out = ["-- ElimuNova PostgreSQL schema (generated from backend/app/models by export_schema.py)", ""]
     for t in db.metadata.sorted_tables:
         table_sql = str(CreateTable(t).compile(dialect=postgresql.dialect())).strip()
         out.append("\n".join(line.rstrip() for line in table_sql.splitlines()) + ";")

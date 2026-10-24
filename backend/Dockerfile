@@ -8,7 +8,8 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-RUN useradd --create-home --uid 10001 appuser
+RUN useradd --create-home --uid 10001 appuser \
+    && mkdir -p /data/zeroq_uploads && chown appuser /data/zeroq_uploads && chmod 700 /data/zeroq_uploads
 COPY app ./app
 COPY migrations ./migrations
 COPY run.py ./run.py

@@ -1,17 +1,20 @@
 # Apex AI customer care (Google Gemini)
 
 Apex AI is a floating "Ask Apex AI" chat available on every page (landing page and all portals).
-It acts as ElimuPro customer care and answers per component:
+It acts as ElimuNova customer care and answers per component:
 
 | Component id | Topic |
 | --- | --- |
-| `general` | ElimuPro in general (signup, admissions workflow, portals) |
-| `academic_analytics` | Academic Analytics (KSh 10,000 / 15,000 per term) |
-| `financial_analytics` | Financial Analytics (KSh 10,000 / 15,000 per term, priced independently) |
-| `zeroq_admissions` | ZeroQ Admissions (KSh 450 per admission) |
-| `zeroq_transfers` | ZeroQ Transfers (KSh 400 per transfer) |
-| `careergps` | CareerGPS (KSh 1,000 per student per academic year) |
-| `apex_ai` | Apex AI plans (Free, Pro USD 5) |
+| `general` | ElimuNova in general (signup, admissions workflow, portals) |
+| `academic_analytics` | Academic Analytics |
+| `financial_analytics` | Financial Analytics (priced independently of Academic Analytics) |
+| `zeroq_admissions` | ZeroQ Admissions |
+| `zeroq_transfers` | ZeroQ Transfers |
+| `careergps` | CareerGPS |
+| `apex_ai` | Apex AI plans (Free, Pro) |
+
+Prices are not written into the assistant's knowledge. They are read from the pricing tables on every chat request
+(see [Pricing](API.md#pricing)), so a price edited by the super admin is quoted immediately.
 
 The widget preselects a topic from the current page (e.g. ZeroQ pages → ZeroQ Admissions) and keeps a separate
 conversation per topic. Users can switch topic from the "Help with" menu.
@@ -39,5 +42,5 @@ conversation per topic. Users can switch topic from the "Help with" menu.
 - No records, emails or phone numbers are sent to Gemini.
 - The assistant is told never to invent prices or payment details, never to ask for passwords/PINs/OTPs, never to claim it
   changed anything, and to state that school fees are paid directly to the school.
-- Prices in the prompt match the pricing spec defaults. When the pricing engine is built, update `COMPONENTS` (or load prices
-  from it) so Apex AI quotes the live configuration.
+- Prices in the prompt come from the pricing tables (`services/pricing.py`); a component switched off sale is described as
+  "not currently on sale" and the assistant sends the customer to the ElimuNova team.

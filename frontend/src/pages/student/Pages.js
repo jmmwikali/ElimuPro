@@ -5,7 +5,7 @@ import { useFetch } from '../../hooks/useFetch';
 import { api } from '../../services/api';
 import Icon from '../../components/Icon';
 import { Alert, Button, Empty, ErrorState, Field, Loading } from '../../components/ui';
-import { DAYS, fmtDate, money } from '../../utils/format';
+import { DAYS, fmtDate, initials, money } from '../../utils/format';
 
 function Page({ title, req, children, actions }) {
   if (req.loading) return <Loading />;
@@ -102,11 +102,20 @@ export function Profile() {
   return (
     <Page title="My profile" req={req}>
       {(s) => {
-        const row = (l, v) => <div className="timeline-row"><div className="time" style={{ width: 130 }}>{l}</div><div>{v || '-'}</div></div>;
+        const tile = (label, value, opts = {}) => <div className={`profile-tile${opts.wide ? ' wide' : ''}`}><span>{label}</span><b className={opts.cap ? 'cap' : undefined}>{value || '-'}</b></div>;
+        const klass = s.class ? `${s.class}${s.stream ? ` ${s.stream}` : ''}` : null;
         return (<>
-          <div className="card">
-            {row('Name', s.full_name)}{row('Admission No.', s.admission_number)}{row('Class', s.class ? `${s.class}${s.stream ? ` ${s.stream}` : ''}` : null)}
-            {row('Date of birth', fmtDate(s.date_of_birth))}{row('Gender', s.gender)}{row('County', s.county)}{row('School', s.school.name)}{row('Email', s.email)}
+          <div className="card profile-hero">
+            <div className="profile-ring"><div className="avatar">{initials(s.full_name)}</div></div>
+            <div>
+              <h2>{s.full_name}</h2>
+              <div className="muted">{s.school.name}</div>
+              <div className="profile-chips"><span className="badge">Adm. No. {s.admission_number}</span>{klass && <span className="badge">{klass}</span>}</div>
+            </div>
+          </div>
+          <div className="profile-tiles">
+            {tile('Admission number', s.admission_number)}{tile('Class', klass)}{tile('Date of birth', fmtDate(s.date_of_birth))}
+            {tile('Gender', s.gender, { cap: true })}{tile('County', s.county)}{tile('School', s.school.name)}{tile('Email', s.email, { wide: true })}
           </div>
           <div className="card"><h3>Contact phone</h3><p className="small muted">You can update your own phone number. Other details are managed by the school office.</p>
             <Alert type={msg.type}>{msg.text}</Alert>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, homeFor } from '../context/AuthContext';
 import { Alert, Button, Field } from '../components/ui';
+import { BRAND } from '../config/brand';
 
 export default function Login() {
   const { login } = useAuth();
@@ -24,7 +25,7 @@ export default function Login() {
   return (
     <>
     <h1>Welcome back</h1>
-    <p className="muted">Log in to your ElimuPro account.</p>
+    <p className="muted">Log in to your {BRAND.name} account.</p>
     <Alert type="error">{error}</Alert>
     <form onSubmit={submit} noValidate>
       <Field label="Email" name="email" type="email" autoComplete="username" required value={form.email} onChange={set('email')} />

@@ -1,8 +1,17 @@
 from datetime import datetime, timedelta
 
+import pytest
+
 from app.extensions import db
-from app.models import AuditLog, ZeroQPass, ZeroQScan
+from app.models import AuditLog, School, ZeroQPass, ZeroQScan
 from conftest import login
+
+
+@pytest.fixture(autouse=True)
+def _pass_rules_off(app):
+    """These tests are about issuing, scanning and revoking a pass. The results/documents rules have their own tests."""
+    School.query.update({School.zeroq_require_results: False, School.zeroq_require_documents: False})
+    db.session.commit()
 
 
 def issue(client, student_headers):

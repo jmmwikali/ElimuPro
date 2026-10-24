@@ -1,5 +1,6 @@
 // Centralised API client. The base URL comes from REACT_APP_API_URL (see .env.example).
 const BASE = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1').replace(/\/$/, '');
+export const API_BASE = BASE;
 const TOKEN_KEY = 'elimupro_token'; // only the auth token is kept client-side; all data lives in the database
 
 export class ApiError extends Error {
@@ -17,12 +18,13 @@ export const tokenStore = {
 };
 
 async function request(path, { method = 'GET', body } = {}) {
-  const headers = { 'Content-Type': 'application/json' };
+  const isForm = typeof FormData !== 'undefined' && body instanceof FormData; // the browser sets the multipart boundary
+  const headers = isForm ? {} : { 'Content-Type': 'application/json' };
   const token = tokenStore.get();
   if (token) headers.Authorization = `Bearer ${token}`;
   let res;
   try {
-    res = await fetch(`${BASE}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
+    res = await fetch(`${BASE}${path}`, { method, headers, body: body ? (isForm ? body : JSON.stringify(body)) : undefined });
   } catch (e) {
     throw new ApiError('Cannot reach the server. Check your internet connection and try again.', 0);
   }
@@ -41,4 +43,5 @@ export const api = {
   put: (p, body) => request(p, { method: 'PUT', body }),
   patch: (p, body) => request(p, { method: 'PATCH', body }),
   delete: (p) => request(p, { method: 'DELETE' }),
+  upload: (p, form) => request(p, { method: 'POST', body: form }),
 };

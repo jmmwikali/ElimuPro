@@ -1,6 +1,7 @@
-# ElimuPro
+# ElimuNova
 
-A modern school management platform for Kenyan schools (primary, junior secondary and senior secondary).
+ElimuNova: *Reimagining Education. Empowering Every Future.* A modern school management platform for Kenyan schools (primary, junior secondary and senior secondary).
+(Formerly ElimuPro. See [docs/BRANDING.md](docs/BRANDING.md) for what was renamed and what deliberately kept its old identifier.)
 Multi-school SaaS: every record belongs to a school and the backend enforces that a school can only reach its own data.
 
 > **Honest status.** This is a working *core* (phases 1-3 and the essentials of 4), not the full product. See
@@ -43,7 +44,7 @@ React 18 (JavaScript, React Router 6, plain CSS, `react-scripts`; no Vite) · Fl
 
 ## Project structure
 ```
-ElimuPro/
+<repository>/
   backend/    Flask API (app/models, routes, services, utils, config), tests/, seed.py, export_schema.py
   frontend/   React app (src/pages, layouts, components, context, services, hooks, utils) + public/ (PWA files)
   database/   schema.sql (generated from the models)

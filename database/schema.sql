@@ -1,4 +1,4 @@
--- ElimuPro PostgreSQL schema (generated from backend/app/models by export_schema.py)
+-- ElimuNova PostgreSQL schema (generated from backend/app/models by export_schema.py)
 
 CREATE TABLE schools (
 	id SERIAL NOT NULL,
@@ -17,6 +17,8 @@ CREATE TABLE schools (
 	admissions_open BOOLEAN NOT NULL,
 	is_active BOOLEAN NOT NULL,
 	is_demo BOOLEAN NOT NULL,
+	zeroq_require_results BOOLEAN DEFAULT true NOT NULL,
+	zeroq_require_documents BOOLEAN DEFAULT true NOT NULL,
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (slug)
@@ -43,6 +45,21 @@ CREATE TABLE classes (
 	FOREIGN KEY(school_id) REFERENCES schools (id)
 );
 CREATE INDEX ix_classes_school_id ON classes (school_id);
+
+CREATE TABLE document_requirements (
+	id SERIAL NOT NULL,
+	school_id INTEGER NOT NULL,
+	doc_type VARCHAR(60) NOT NULL,
+	label VARCHAR(120) NOT NULL,
+	instructions TEXT,
+	required BOOLEAN NOT NULL,
+	is_active BOOLEAN NOT NULL,
+	sort_order INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (school_id, doc_type),
+	FOREIGN KEY(school_id) REFERENCES schools (id)
+);
+CREATE INDEX ix_document_requirements_school_id ON document_requirements (school_id);
 
 CREATE TABLE grade_bands (
 	id SERIAL NOT NULL,
@@ -103,6 +120,31 @@ CREATE TABLE announcements (
 );
 CREATE INDEX ix_announcements_school_id ON announcements (school_id);
 
+CREATE TABLE assessment_results (
+	id SERIAL NOT NULL,
+	school_id INTEGER NOT NULL,
+	student_user_id INTEGER NOT NULL,
+	assessment_year INTEGER NOT NULL,
+	candidate_number VARCHAR(30),
+	subjects JSON NOT NULL,
+	status VARCHAR(30) NOT NULL,
+	review_note TEXT,
+	verification_basis VARCHAR(200),
+	submitted_at TIMESTAMP WITHOUT TIME ZONE,
+	verified_at TIMESTAMP WITHOUT TIME ZONE,
+	verified_by INTEGER,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (student_user_id, assessment_year),
+	FOREIGN KEY(school_id) REFERENCES schools (id),
+	FOREIGN KEY(student_user_id) REFERENCES users (id),
+	FOREIGN KEY(verified_by) REFERENCES users (id)
+);
+CREATE INDEX ix_assessment_results_student_user_id ON assessment_results (student_user_id);
+CREATE INDEX ix_assessment_results_school_id ON assessment_results (school_id);
+CREATE INDEX ix_assessment_results_status ON assessment_results (status);
+
 CREATE TABLE audit_logs (
 	id SERIAL NOT NULL,
 	school_id INTEGER,
@@ -117,8 +159,66 @@ CREATE TABLE audit_logs (
 	FOREIGN KEY(school_id) REFERENCES schools (id),
 	FOREIGN KEY(user_id) REFERENCES users (id)
 );
-CREATE INDEX ix_audit_logs_user_id ON audit_logs (user_id);
 CREATE INDEX ix_audit_logs_school_id ON audit_logs (school_id);
+CREATE INDEX ix_audit_logs_user_id ON audit_logs (user_id);
+
+CREATE TABLE invoices (
+	id SERIAL NOT NULL,
+	school_id INTEGER NOT NULL,
+	number VARCHAR(30) NOT NULL,
+	component_key VARCHAR(40) NOT NULL,
+	description VARCHAR(200) NOT NULL,
+	quantity INTEGER NOT NULL,
+	student_count INTEGER,
+	unit_price NUMERIC(12, 2) NOT NULL,
+	amount NUMERIC(12, 2) NOT NULL,
+	currency VARCHAR(3) NOT NULL,
+	reference VARCHAR(60) NOT NULL,
+	status VARCHAR(10) NOT NULL,
+	created_by INTEGER,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	paid_at TIMESTAMP WITHOUT TIME ZONE,
+	PRIMARY KEY (id),
+	UNIQUE (school_id, component_key, reference),
+	FOREIGN KEY(school_id) REFERENCES schools (id),
+	UNIQUE (number),
+	FOREIGN KEY(created_by) REFERENCES users (id)
+);
+CREATE INDEX ix_invoices_status ON invoices (status);
+CREATE INDEX ix_invoices_school_id ON invoices (school_id);
+
+CREATE TABLE notifications (
+	id SERIAL NOT NULL,
+	user_id INTEGER NOT NULL,
+	school_id INTEGER,
+	kind VARCHAR(40) NOT NULL,
+	title VARCHAR(160) NOT NULL,
+	body VARCHAR(500),
+	read_at TIMESTAMP WITHOUT TIME ZONE,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(user_id) REFERENCES users (id),
+	FOREIGN KEY(school_id) REFERENCES schools (id)
+);
+CREATE INDEX ix_notifications_user_id ON notifications (user_id);
+CREATE INDEX ix_notifications_created_at ON notifications (created_at);
+CREATE INDEX ix_notifications_school_id ON notifications (school_id);
+
+CREATE TABLE price_components (
+	id SERIAL NOT NULL,
+	key VARCHAR(40) NOT NULL,
+	name VARCHAR(120) NOT NULL,
+	description VARCHAR(500),
+	billing_unit VARCHAR(30) NOT NULL,
+	currency VARCHAR(3) NOT NULL,
+	amount NUMERIC(12, 2),
+	is_active BOOLEAN NOT NULL,
+	updated_by INTEGER,
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (key),
+	FOREIGN KEY(updated_by) REFERENCES users (id)
+);
 
 CREATE TABLE streams (
 	id SERIAL NOT NULL,
@@ -130,8 +230,8 @@ CREATE TABLE streams (
 	FOREIGN KEY(school_id) REFERENCES schools (id),
 	FOREIGN KEY(class_id) REFERENCES classes (id)
 );
-CREATE INDEX ix_streams_school_id ON streams (school_id);
 CREATE INDEX ix_streams_class_id ON streams (class_id);
+CREATE INDEX ix_streams_school_id ON streams (school_id);
 
 CREATE TABLE teacher_assignments (
 	id SERIAL NOT NULL,
@@ -146,9 +246,9 @@ CREATE TABLE teacher_assignments (
 	FOREIGN KEY(class_id) REFERENCES classes (id),
 	FOREIGN KEY(subject_id) REFERENCES subjects (id)
 );
-CREATE INDEX ix_teacher_assignments_teacher_id ON teacher_assignments (teacher_id);
-CREATE INDEX ix_teacher_assignments_class_id ON teacher_assignments (class_id);
 CREATE INDEX ix_teacher_assignments_school_id ON teacher_assignments (school_id);
+CREATE INDEX ix_teacher_assignments_class_id ON teacher_assignments (class_id);
+CREATE INDEX ix_teacher_assignments_teacher_id ON teacher_assignments (teacher_id);
 
 CREATE TABLE terms (
 	id SERIAL NOT NULL,
@@ -164,6 +264,24 @@ CREATE TABLE terms (
 );
 CREATE INDEX ix_terms_school_id ON terms (school_id);
 
+CREATE TABLE assessment_result_events (
+	id SERIAL NOT NULL,
+	result_id INTEGER NOT NULL,
+	school_id INTEGER NOT NULL,
+	from_status VARCHAR(30),
+	to_status VARCHAR(30) NOT NULL,
+	actor_user_id INTEGER,
+	actor_role VARCHAR(30),
+	note TEXT,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(result_id) REFERENCES assessment_results (id),
+	FOREIGN KEY(school_id) REFERENCES schools (id),
+	FOREIGN KEY(actor_user_id) REFERENCES users (id)
+);
+CREATE INDEX ix_assessment_result_events_result_id ON assessment_result_events (result_id);
+CREATE INDEX ix_assessment_result_events_school_id ON assessment_result_events (school_id);
+
 CREATE TABLE exams (
 	id SERIAL NOT NULL,
 	school_id INTEGER NOT NULL,
@@ -176,8 +294,8 @@ CREATE TABLE exams (
 	FOREIGN KEY(term_id) REFERENCES terms (id),
 	FOREIGN KEY(class_id) REFERENCES classes (id)
 );
-CREATE INDEX ix_exams_class_id ON exams (class_id);
 CREATE INDEX ix_exams_school_id ON exams (school_id);
+CREATE INDEX ix_exams_class_id ON exams (class_id);
 
 CREATE TABLE fee_structures (
 	id SERIAL NOT NULL,
@@ -192,6 +310,43 @@ CREATE TABLE fee_structures (
 	FOREIGN KEY(class_id) REFERENCES classes (id)
 );
 CREATE INDEX ix_fee_structures_school_id ON fee_structures (school_id);
+
+CREATE TABLE payment_attempts (
+	id SERIAL NOT NULL,
+	invoice_id INTEGER NOT NULL,
+	school_id INTEGER NOT NULL,
+	provider VARCHAR(20) NOT NULL,
+	provider_charge_id VARCHAR(80),
+	idempotency_key VARCHAR(80) NOT NULL,
+	phone VARCHAR(15) NOT NULL,
+	amount_cents BIGINT NOT NULL,
+	status VARCHAR(20) NOT NULL,
+	provider_status VARCHAR(30),
+	receipt VARCHAR(60),
+	error VARCHAR(255),
+	created_by INTEGER,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(invoice_id) REFERENCES invoices (id),
+	FOREIGN KEY(school_id) REFERENCES schools (id),
+	UNIQUE (provider_charge_id),
+	UNIQUE (idempotency_key),
+	FOREIGN KEY(created_by) REFERENCES users (id)
+);
+CREATE INDEX ix_payment_attempts_invoice_id ON payment_attempts (invoice_id);
+CREATE INDEX ix_payment_attempts_school_id ON payment_attempts (school_id);
+CREATE INDEX ix_payment_attempts_status ON payment_attempts (status);
+
+CREATE TABLE price_tiers (
+	id SERIAL NOT NULL,
+	component_id INTEGER NOT NULL,
+	up_to_students INTEGER,
+	amount NUMERIC(12, 2) NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(component_id) REFERENCES price_components (id)
+);
+CREATE INDEX ix_price_tiers_component_id ON price_tiers (component_id);
 
 CREATE TABLE students (
 	id SERIAL NOT NULL,
@@ -221,9 +376,9 @@ CREATE TABLE students (
 	FOREIGN KEY(class_id) REFERENCES classes (id),
 	FOREIGN KEY(stream_id) REFERENCES streams (id)
 );
-CREATE INDEX ix_students_school_id ON students (school_id);
-CREATE INDEX ix_students_status ON students (status);
 CREATE INDEX ix_students_class_id ON students (class_id);
+CREATE INDEX ix_students_status ON students (status);
+CREATE INDEX ix_students_school_id ON students (school_id);
 
 CREATE TABLE timetable_entries (
 	id SERIAL NOT NULL,
@@ -260,8 +415,8 @@ CREATE TABLE exam_results (
 	FOREIGN KEY(student_id) REFERENCES students (id),
 	FOREIGN KEY(subject_id) REFERENCES subjects (id)
 );
-CREATE INDEX ix_exam_results_student_id ON exam_results (student_id);
 CREATE INDEX ix_exam_results_school_id ON exam_results (school_id);
+CREATE INDEX ix_exam_results_student_id ON exam_results (student_id);
 
 CREATE TABLE guardians (
 	id SERIAL NOT NULL,
@@ -278,8 +433,8 @@ CREATE TABLE guardians (
 	FOREIGN KEY(student_id) REFERENCES students (id),
 	FOREIGN KEY(user_id) REFERENCES users (id)
 );
-CREATE INDEX ix_guardians_student_id ON guardians (student_id);
 CREATE INDEX ix_guardians_school_id ON guardians (school_id);
+CREATE INDEX ix_guardians_student_id ON guardians (student_id);
 
 CREATE TABLE payments (
 	id SERIAL NOT NULL,
@@ -301,8 +456,8 @@ CREATE TABLE payments (
 	FOREIGN KEY(term_id) REFERENCES terms (id),
 	FOREIGN KEY(recorded_by) REFERENCES users (id)
 );
-CREATE INDEX ix_payments_student_id ON payments (student_id);
 CREATE INDEX ix_payments_school_id ON payments (school_id);
+CREATE INDEX ix_payments_student_id ON payments (student_id);
 
 CREATE TABLE student_applications (
 	id SERIAL NOT NULL,
@@ -341,8 +496,8 @@ CREATE TABLE student_applications (
 	FOREIGN KEY(applying_class_id) REFERENCES classes (id),
 	FOREIGN KEY(reviewed_by) REFERENCES users (id)
 );
-CREATE INDEX ix_student_applications_status ON student_applications (status);
 CREATE INDEX ix_student_applications_school_id ON student_applications (school_id);
+CREATE INDEX ix_student_applications_status ON student_applications (status);
 
 CREATE TABLE student_fees (
 	id SERIAL NOT NULL,
@@ -358,8 +513,8 @@ CREATE TABLE student_fees (
 	FOREIGN KEY(term_id) REFERENCES terms (id),
 	FOREIGN KEY(fee_structure_id) REFERENCES fee_structures (id)
 );
-CREATE INDEX ix_student_fees_school_id ON student_fees (school_id);
 CREATE INDEX ix_student_fees_student_id ON student_fees (student_id);
+CREATE INDEX ix_student_fees_school_id ON student_fees (school_id);
 
 CREATE TABLE application_documents (
 	id SERIAL NOT NULL,
@@ -369,11 +524,30 @@ CREATE TABLE application_documents (
 	file_name VARCHAR(255) NOT NULL,
 	file_url VARCHAR(500) NOT NULL,
 	uploaded_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	storage_key VARCHAR(120),
+	content_type VARCHAR(60),
+	size_bytes INTEGER,
+	sha256 VARCHAR(64),
+	status VARCHAR(30) DEFAULT 'uploaded' NOT NULL,
+	version INTEGER DEFAULT '1' NOT NULL,
+	supersedes_id INTEGER,
+	uploaded_by INTEGER,
+	verification JSON,
+	escalated_at TIMESTAMP WITHOUT TIME ZONE,
+	reviewed_by INTEGER,
+	reviewed_at TIMESTAMP WITHOUT TIME ZONE,
+	review_note TEXT,
 	PRIMARY KEY (id),
 	FOREIGN KEY(school_id) REFERENCES schools (id),
-	FOREIGN KEY(application_id) REFERENCES student_applications (id)
+	FOREIGN KEY(application_id) REFERENCES student_applications (id),
+	UNIQUE (storage_key),
+	FOREIGN KEY(supersedes_id) REFERENCES application_documents (id),
+	FOREIGN KEY(uploaded_by) REFERENCES users (id),
+	FOREIGN KEY(reviewed_by) REFERENCES users (id)
 );
+CREATE INDEX ix_application_documents_status ON application_documents (status);
 CREATE INDEX ix_application_documents_application_id ON application_documents (application_id);
+CREATE INDEX ix_application_documents_sha256 ON application_documents (sha256);
 CREATE INDEX ix_application_documents_school_id ON application_documents (school_id);
 
 CREATE TABLE zeroq_passes (
@@ -398,10 +572,29 @@ CREATE TABLE zeroq_passes (
 	UNIQUE (token_hash),
 	FOREIGN KEY(issued_by) REFERENCES users (id)
 );
-CREATE INDEX ix_zeroq_passes_expires_at ON zeroq_passes (expires_at);
-CREATE INDEX ix_zeroq_passes_application_id ON zeroq_passes (application_id);
-CREATE INDEX ix_zeroq_passes_student_id ON zeroq_passes (student_id);
 CREATE INDEX ix_zeroq_passes_school_id ON zeroq_passes (school_id);
+CREATE INDEX ix_zeroq_passes_student_id ON zeroq_passes (student_id);
+CREATE INDEX ix_zeroq_passes_application_id ON zeroq_passes (application_id);
+CREATE INDEX ix_zeroq_passes_expires_at ON zeroq_passes (expires_at);
+
+CREATE TABLE document_events (
+	id SERIAL NOT NULL,
+	document_id INTEGER NOT NULL,
+	school_id INTEGER NOT NULL,
+	action VARCHAR(30) NOT NULL,
+	from_status VARCHAR(30),
+	to_status VARCHAR(30),
+	actor_user_id INTEGER,
+	actor_role VARCHAR(30),
+	note TEXT,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(document_id) REFERENCES application_documents (id),
+	FOREIGN KEY(school_id) REFERENCES schools (id),
+	FOREIGN KEY(actor_user_id) REFERENCES users (id)
+);
+CREATE INDEX ix_document_events_school_id ON document_events (school_id);
+CREATE INDEX ix_document_events_document_id ON document_events (document_id);
 
 CREATE TABLE zeroq_scans (
 	id SERIAL NOT NULL,
@@ -416,8 +609,8 @@ CREATE TABLE zeroq_scans (
 	FOREIGN KEY(pass_id) REFERENCES zeroq_passes (id),
 	FOREIGN KEY(scanned_by) REFERENCES users (id)
 );
-CREATE INDEX ix_zeroq_scans_scanned_at ON zeroq_scans (scanned_at);
-CREATE INDEX ix_zeroq_scans_outcome ON zeroq_scans (outcome);
 CREATE INDEX ix_zeroq_scans_school_id ON zeroq_scans (school_id);
+CREATE INDEX ix_zeroq_scans_scanned_at ON zeroq_scans (scanned_at);
 CREATE INDEX ix_zeroq_scans_pass_id ON zeroq_scans (pass_id);
+CREATE INDEX ix_zeroq_scans_outcome ON zeroq_scans (outcome);
 CREATE INDEX ix_zeroq_scans_scanned_by ON zeroq_scans (scanned_by);

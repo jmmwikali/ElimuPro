@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy import true
+
 from ..extensions import db, bcrypt
 
 
@@ -25,6 +27,9 @@ class School(db.Model):
     admissions_open = db.Column(db.Boolean, default=True, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     is_demo = db.Column(db.Boolean, default=False, nullable=False)
+    # ZeroQ pass rules: both on by default. A school turns the results rule off for grades that do not sit the KJSEA.
+    zeroq_require_results = db.Column(db.Boolean, default=True, server_default=true(), nullable=False)
+    zeroq_require_documents = db.Column(db.Boolean, default=True, server_default=true(), nullable=False)
     created_at = db.Column(db.DateTime, default=now, nullable=False)
 
     def to_dict(self, public=False):

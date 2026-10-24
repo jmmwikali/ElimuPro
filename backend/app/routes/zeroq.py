@@ -7,6 +7,7 @@ from sqlalchemy import or_
 
 from ..extensions import db
 from ..models import Student, StudentApplication, ZeroQPass, ZeroQScan
+from ..services import zeroq_gate
 from ..utils.responses import err, ok
 from ..utils.security import ADMIN_ROLES, audit, roles_required
 from ..utils.validation import paginate
@@ -44,11 +45,13 @@ def _record_scan(fingerprint, outcome, admission_pass=None):
 def my_pass():
     application = _application_for_student()
     if not application or not application.student_id:
-        return ok({"eligible": False, "pass": None})
+        return ok({"eligible": False, "ready": False, "blockers": [], "pass": None})
     current = ZeroQPass.query.filter_by(
         school_id=g.user.school_id, application_id=application.id
     ).order_by(ZeroQPass.created_at.desc()).first()
-    return ok({"eligible": application.status == "enrolled",
+    eligible = application.status == "enrolled"
+    blockers = zeroq_gate.pass_blockers(g.user, application, g.user.school) if eligible else []
+    return ok({"eligible": eligible, "ready": eligible and not blockers, "blockers": [b["message"] for b in blockers],
                "pass": current.to_dict() if current else None})
 
 
@@ -58,6 +61,11 @@ def issue_pass():
     application = _application_for_student()
     if not application or not application.student_id or application.status != "enrolled":
         return err("A ZeroQ pass is available after your admission is approved", 409)
+    # The school's pass rules are checked BEFORE anything is changed, so a blocked student keeps any pass they already hold.
+    blockers = zeroq_gate.pass_blockers(g.user, application, g.user.school)
+    if blockers:
+        messages = [b["message"] for b in blockers]
+        return err("Your admission pass is not available yet. " + " ".join(messages), 409, {"blockers": messages})
     previous = ZeroQPass.query.filter_by(
         school_id=g.user.school_id, application_id=application.id, revoked_at=None
     ).all()
@@ -241,6 +249,7 @@ def scan():
             "institution": g.user.school.name,
             "admission_status": admission_pass.application.status,
             "document_count": len(admission_pass.application.documents),
+            "requirements": zeroq_gate.requirements_status(admission_pass.application.applicant, admission_pass.application),
         },
     })
 

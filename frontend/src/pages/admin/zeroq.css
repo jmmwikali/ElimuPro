@@ -32,7 +32,7 @@
 .zeroq-empty { max-width: 660px; }
 .zeroq-empty h2 { margin-bottom: .5rem; }
 .zeroq-pass { overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
-.zeroq-pass-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 1.2rem; background: linear-gradient(115deg, #0D1B2E, #102C48 60%, #064D6B); border-bottom: 1px solid var(--border); }
+.zeroq-pass-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 1.2rem; background: linear-gradient(115deg, #1A1148, #3A2A9A 55%, #2557C9); border-bottom: 1px solid var(--border); }
 .zeroq-pass-top h2 { margin: .35rem 0 .15rem; font-size: 1.35rem; }
 .zeroq-pass-top p { margin: 0; color: var(--paper-blue); }
 .zeroq-pass-body { display: grid; gap: 1.25rem; justify-items: center; padding: 1.25rem; }

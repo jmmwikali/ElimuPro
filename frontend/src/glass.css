@@ -1,0 +1,153 @@
+/* Nova glass theme. Loaded after index.css.
+   Every screen gets an aurora backdrop in the logo colours and frosted glass surfaces.
+   Student screens (.theme-student) get a stronger, more colourful glass, and the student profile the strongest.
+   Contrast was checked against the brightest part of the aurora: body text >= 9:1, muted text >= 5:1. */
+:root {
+  --glass-fill: rgba(16, 20, 52, .50);
+  --glass-tint: linear-gradient(145deg, rgba(255, 255, 255, .085) 0%, rgba(255, 255, 255, .025) 100%);
+  --glass-edge: rgba(255, 255, 255, .13);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, .14);
+  --glass-shadow: 0 12px 32px rgba(3, 5, 22, .38);
+  --glass-blur: blur(16px) saturate(150%);
+}
+
+/* ---------- aurora backdrop: gives the glass something to refract ---------- */
+html { background: var(--bg); }
+body { background: transparent; position: relative; }
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(60vmax 45vmax at 6% -6%, rgba(138, 77, 255, .30), transparent 62%),
+    radial-gradient(55vmax 40vmax at 104% 4%, rgba(59, 132, 255, .24), transparent 64%),
+    radial-gradient(70vmax 50vmax at 50% 118%, rgba(107, 91, 255, .22), transparent 62%);
+}
+.shell { position: relative; isolation: isolate; }
+.theme-student::before {
+  content: ""; position: fixed; inset: -6%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(44vmax 34vmax at 82% 18%, rgba(138, 77, 255, .44), transparent 66%),
+    radial-gradient(42vmax 32vmax at 14% 70%, rgba(59, 132, 255, .40), transparent 68%),
+    radial-gradient(30vmax 24vmax at 64% 90%, rgba(107, 91, 255, .34), transparent 70%);
+  animation: nova-drift 30s ease-in-out infinite alternate;
+}
+@keyframes nova-drift { to { transform: translate3d(-3%, 2.5%, 0) scale(1.06); } }
+
+/* ---------- base glass: cards, lists, tables ---------- */
+.card, .list, .table-wrap {
+  background: var(--glass-tint), var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  border-radius: 14px;
+  box-shadow: var(--glass-shine), var(--glass-shadow);
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+}
+.card.accent { border-left: 4px solid var(--nova-indigo); }
+/* glass inside glass stays flat: no stacked blur, just a lighter pane */
+.card .table-wrap, .card .list, .card .card {
+  background: rgba(255, 255, 255, .045); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+  border-color: rgba(255, 255, 255, .09);
+}
+th { background: rgba(255, 255, 255, .06); }
+.list-row, th, td { border-color: rgba(255, 255, 255, .09); }
+a.list-row:hover { background: rgba(138, 77, 255, .14); }
+
+/* frosted bars and sheets */
+.topbar, .bottomnav, .sidenav, .drawer, .public header {
+  background: rgba(14, 18, 48, .60); border-color: rgba(255, 255, 255, .09);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+.overlay { background: rgba(6, 8, 26, .62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.modal {
+  background: var(--glass-tint), rgba(16, 20, 52, .82); border: 1px solid rgba(255, 255, 255, .16);
+  box-shadow: var(--glass-shine), 0 24px 60px rgba(3, 5, 22, .55);
+  backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+.btn.secondary {
+  background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .18); color: var(--text);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.btn.secondary:hover:not(:disabled) { background: rgba(255, 255, 255, .12); filter: none; }
+.btn:not(.secondary):not(:disabled) { box-shadow: 0 6px 18px rgba(107, 91, 255, .30), inset 0 1px 0 rgba(255, 255, 255, .22); }
+.input { background: rgba(8, 10, 30, .55); border-color: rgba(255, 255, 255, .16); }
+.bottomnav a.active { color: #D9CBFF; }
+.badge { background: rgba(107, 91, 255, .24); }
+.badge.green { background: var(--success-soft); } .badge.red { background: var(--danger-soft); }
+.badge.blue { background: var(--info-soft); } .badge.warning { background: var(--warning-soft); }
+
+/* ---------- student screens: stronger, more colourful glass ---------- */
+.theme-student .card, .theme-student .list, .theme-student .table-wrap {
+  background:
+    linear-gradient(145deg, rgba(138, 77, 255, .17) 0%, rgba(59, 132, 255, .10) 55%, rgba(255, 255, 255, .04) 100%),
+    rgba(14, 18, 48, .40);
+  border: 1px solid rgba(255, 255, 255, .20);
+  border-radius: 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .24), inset 0 -1px 0 rgba(255, 255, 255, .04),
+              0 18px 44px rgba(4, 4, 28, .46), 0 0 0 1px rgba(138, 77, 255, .07);
+  backdrop-filter: blur(26px) saturate(185%); -webkit-backdrop-filter: blur(26px) saturate(185%);
+}
+.theme-student .card .table-wrap, .theme-student .card .list, .theme-student .card .card {
+  background: rgba(255, 255, 255, .055); border-radius: 12px; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+.theme-student { --muted: #B7C1DE; }
+.theme-student .card.accent { border-left: 4px solid var(--nova-purple); }
+.theme-student .stat .value { background: var(--nova-text-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.theme-student .stat .value[style*="color"] { background: none; color: inherit; } /* red/green balances keep their meaning */
+.theme-student .greet { padding: 1rem 1.25rem; }
+.theme-student .avatar { background: rgba(10, 13, 34, .7); color: #D9CBFF; border: 2px solid transparent;
+  background-image: linear-gradient(rgba(10, 13, 34, .85), rgba(10, 13, 34, .85)), var(--nova-grad-logo); background-origin: border-box; background-clip: padding-box, border-box; }
+.theme-student .topbar { background: rgba(14, 18, 48, .46); }
+.theme-student .navlink { border-radius: 12px; }
+
+/* ---------- student profile: the strongest glass ---------- */
+.profile-hero {
+  position: relative; overflow: hidden; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.4rem; align-items: center; padding: 1.6rem;
+}
+.theme-student .profile-hero {
+  background:
+    radial-gradient(70% 140% at 100% 0%, rgba(138, 77, 255, .38), transparent 62%),
+    radial-gradient(60% 120% at 0% 100%, rgba(59, 132, 255, .30), transparent 62%),
+    rgba(14, 18, 48, .32);
+  border-color: rgba(255, 255, 255, .28); border-radius: 24px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), 0 26px 60px rgba(4, 4, 28, .55), 0 0 60px rgba(107, 91, 255, .20);
+  backdrop-filter: blur(32px) saturate(200%); -webkit-backdrop-filter: blur(32px) saturate(200%);
+}
+.profile-ring { width: 104px; height: 104px; border-radius: 50%; padding: 3px; background: var(--nova-grad-logo); box-shadow: 0 0 34px rgba(138, 77, 255, .5); flex: none; }
+.profile-ring .avatar { width: 100%; height: 100%; font-size: 2rem; background: rgba(10, 13, 34, .88); border: 0; background-image: none; color: #fff; }
+.profile-hero h2 { font-size: 1.6rem; margin: 0 0 .15rem; }
+.profile-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+.profile-chips .badge { background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .18); }
+.profile-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .8rem; }
+.profile-tile { padding: .85rem 1.05rem; min-width: 0; border-radius: 16px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14); backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); }
+.theme-student .profile-tile { background: linear-gradient(145deg, rgba(138, 77, 255, .14), rgba(59, 132, 255, .08)); border-color: rgba(255, 255, 255, .20); }
+.profile-tile span { display: block; color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; }
+.profile-tile b { display: block; margin-top: .15rem; font-weight: 600; overflow-wrap: anywhere; }
+.profile-tile b.cap { text-transform: capitalize; }
+@media (min-width: 700px) { .profile-tile.wide { grid-column: span 2; } }
+@media (max-width: 520px) {
+  .profile-hero { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 1.3rem; } .profile-chips { justify-content: center; }
+  .theme-student .card, .theme-student .list, .theme-student .table-wrap { backdrop-filter: blur(18px) saturate(170%); -webkit-backdrop-filter: blur(18px) saturate(170%); }
+}
+
+/* ---------- landing page: glass panels over the hero photo ---------- */
+.lp-ly-b { background: rgba(138, 77, 255, .20); border: 1px solid rgba(255, 255, 255, .10); }
+.lp-ly-m { background: rgba(107, 91, 255, .22); border: 1px solid rgba(255, 255, 255, .14); }
+.lp-ly-f, .lp-mock, .lp-rc, .lp-rpanel, .lp-fgrid {
+  background: var(--glass-tint), rgba(16, 20, 52, .46); border-color: rgba(255, 255, 255, .18);
+  box-shadow: var(--glass-shine), var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%);
+}
+.lp-steps button { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .14); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.lp-steps button:hover { background: rgba(138, 77, 255, .16); }
+.lp-btn.ghost { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .22); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.lp-footer { background: rgba(10, 13, 34, .72); }
+
+/* ---------- accessibility and fallbacks ---------- */
+@media (prefers-reduced-motion: reduce) { .theme-student::before { animation: none; } }
+@media (prefers-reduced-transparency: reduce) {
+  .card, .list, .table-wrap, .modal, .topbar, .bottomnav, .sidenav, .drawer, .profile-tile, .profile-hero { background: var(--surface-solid) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card, .list, .table-wrap, .profile-tile { background: rgba(22, 26, 68, .92) !important; }
+  .modal, .topbar, .bottomnav, .sidenav, .drawer { background: rgba(14, 18, 48, .97) !important; }
+}
+@media print { body::before, .theme-student::before { display: none; } .card, .list, .table-wrap { background: #fff !important; box-shadow: none; backdrop-filter: none; border-color: #ccc; } html { background: #fff; } }

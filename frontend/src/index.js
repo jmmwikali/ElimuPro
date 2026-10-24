@@ -5,6 +5,7 @@ import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import ApexAssistant from './components/ApexAssistant';
 import './index.css';
+import './glass.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

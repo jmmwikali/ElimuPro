@@ -124,7 +124,8 @@ class StudentApplication(db.Model):
 
 
 class ApplicationDocument(db.Model):
-    """Model only: upload endpoints are not built yet (see docs/SETUP.md)."""
+    """An admission document a student uploaded. The file lives in private storage (never a public URL);
+    `file_url` holds the internal reference `private:<storage_key>`."""
     __tablename__ = "application_documents"
     id = db.Column(db.Integer, primary_key=True)
     school_id = db.Column(db.Integer, db.ForeignKey("schools.id"), nullable=False, index=True)
@@ -133,6 +134,24 @@ class ApplicationDocument(db.Model):
     file_name = db.Column(db.String(255), nullable=False)
     file_url = db.Column(db.String(500), nullable=False)
     uploaded_at = db.Column(db.DateTime, default=now, nullable=False)
+    # ZeroQ verification workflow
+    storage_key = db.Column(db.String(120), unique=True)
+    content_type = db.Column(db.String(60))
+    size_bytes = db.Column(db.Integer)
+    sha256 = db.Column(db.String(64), index=True)
+    status = db.Column(db.String(30), default="uploaded", server_default="uploaded", nullable=False, index=True)
+    version = db.Column(db.Integer, default=1, server_default="1", nullable=False)
+    supersedes_id = db.Column(db.Integer, db.ForeignKey("application_documents.id"))
+    uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    verification = db.Column(db.JSON)  # structured result of the automated checks
+    escalated_at = db.Column(db.DateTime)
+    reviewed_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    reviewed_at = db.Column(db.DateTime)
+    review_note = db.Column(db.Text)
+    events = db.relationship("DocumentEvent", backref="document", order_by="DocumentEvent.id",
+                             cascade="all, delete-orphan")
 
     def to_dict(self):
-        return {"id": self.id, "doc_type": self.doc_type, "file_name": self.file_name, "file_url": self.file_url}
+        return {"id": self.id, "doc_type": self.doc_type, "file_name": self.file_name, "status": self.status,
+                "version": self.version, "size_bytes": self.size_bytes, "content_type": self.content_type,
+                "uploaded_at": self.uploaded_at.isoformat(), "escalated": self.escalated_at is not None}

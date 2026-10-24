@@ -25,6 +25,9 @@ services:
       JWT_ACCESS_HOURS: ${JWT_ACCESS_HOURS:-12}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      CYZORA_SECRET_KEY: ${CYZORA_SECRET_KEY:-}
+      CYZORA_WEBHOOK_SECRET: ${CYZORA_WEBHOOK_SECRET:-}
+      ZEROQ_UPLOAD_DIR: /data/zeroq_uploads
     depends_on:
       db:
         condition: service_healthy
@@ -34,6 +37,8 @@ services:
     build: ./backend
     restart: unless-stopped
     environment: *backend-environment
+    volumes:
+      - zeroq_uploads:/data/zeroq_uploads   # private student documents; must survive restarts
     ports:
       - "5000:5000"
     depends_on:
@@ -54,3 +59,4 @@ services:
 
 volumes:
   postgres_data:
+  zeroq_uploads:

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { Alert, Button, ErrorState, Loading } from '../../components/ui';
 import { api } from '../../services/api';
+import { BRAND } from '../../config/brand';
 import '../admin/zeroq.css';
 
 function dateLabel(value) {
@@ -40,7 +42,7 @@ export default function ZeroQStudent() {
     setMessage('');
     try {
       const response = await api.post('/zeroq/my/pass', {});
-      setRecord({ eligible: true, pass: response.data.pass });
+      setRecord({ eligible: true, ready: true, blockers: [], pass: response.data.pass });
       setQrValue(response.data.qr_value);
       setMessage(response.message || 'Your pass is ready. Keep the QR code private.');
     } catch (e) {
@@ -70,23 +72,32 @@ export default function ZeroQStudent() {
   if (!record?.eligible) {
     return (
       <section className="zeroq-page stack">
-        <div className="zeroq-heading"><span className="zeroq-kicker">ELIMUPRO ADMISSIONS</span><h1>ZeroQ</h1><p>No queue. No paperwork. Just scan.</p></div>
+        <div className="zeroq-heading"><span className="zeroq-kicker">{BRAND.name.toUpperCase()} ADMISSIONS</span><h1>ZeroQ</h1><p>No queue. No paperwork. Just scan.</p></div>
         <div className="card zeroq-empty"><h2>Your digital pass comes after approval</h2><p className="muted">Complete your application and wait for your school to approve your admission. Your pass will appear here when you are enrolled.</p></div>
       </section>
     );
   }
 
   const pass = record.pass;
+  const blocked = record.ready === false && (record.blockers || []).length > 0; // the school's pass rules are not met yet
   const qrIsValid = pass && pass.status === 'ready';
 
   return (
     <section className="zeroq-page stack">
-      <div className="zeroq-heading"><span className="zeroq-kicker">ELIMUPRO ADMISSIONS</span><h1>ZeroQ</h1><p>No queue. No paperwork. Just scan.</p></div>
+      <div className="zeroq-heading"><span className="zeroq-kicker">{BRAND.name.toUpperCase()} ADMISSIONS</span><h1>ZeroQ</h1><p>No queue. No paperwork. Just scan.</p></div>
       {message && <Alert type="success">{message}</Alert>}
       {error && <Alert type="error">{error.message} Your pass has not been verified or changed unless the server confirms it.</Alert>}
-      {!pass ? (
+      {blocked && (
+        <div className="card zeroq-empty">
+          <h2>Your pass unlocks when your school has checked these</h2>
+          <ul style={{ textAlign: 'left', margin: '.5rem auto 1rem', maxWidth: 520 }}>{record.blockers.map((b, i) => <li key={i}>{b}</li>)}</ul>
+          <p className="muted small">A pass shows your school you are cleared to arrive, so it is only issued once your school has verified these. Automated checks are not enough on their own.</p>
+          <Link className="btn" to="/student/onboarding">Open Admission progress</Link>
+        </div>
+      )}
+      {!pass && !blocked ? (
         <div className="card zeroq-empty"><h2>Your admission pass is ready to be issued</h2><p className="muted">Generate a secure QR pass to present when you arrive at school.</p><Button onClick={issue} loading={busy}>Generate admission pass</Button></div>
-      ) : (
+      ) : pass ? (
         <div className="zeroq-pass">
           <div className="zeroq-pass-top"><div><span className="zeroq-kicker">DIGITAL ADMISSION PASS</span><h2>{pass.student.full_name}</h2><p>{pass.student.class || 'Class to be confirmed'}</p></div><span className={`zeroq-status ${pass.status}`}>{pass.status.replace('_', ' ')}</span></div>
           <div className="zeroq-pass-body">
@@ -102,11 +113,11 @@ export default function ZeroQStudent() {
           </div>
           <div className="zeroq-pass-note">Present this pass to an admissions officer. The QR contains a secure reference, not your personal details.</div>
           <div className="row wrap zeroq-actions no-print">
-            {['ready', 'expired', 'revoked'].includes(pass.status) && <Button onClick={issue} loading={busy}>{pass.status === 'ready' ? 'Regenerate pass' : 'Generate new pass'}</Button>}
+            {['ready', 'expired', 'revoked'].includes(pass.status) && <Button onClick={issue} loading={busy} disabled={blocked}>{pass.status === 'ready' ? 'Regenerate pass' : 'Generate new pass'}</Button>}
             {pass.status === 'ready' && qrValue && <Button variant="secondary" onClick={revoke} loading={busy}>Revoke pass</Button>}
           </div>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

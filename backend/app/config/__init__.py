@@ -1,10 +1,18 @@
 import os
+import tempfile
 from datetime import timedelta
+from pathlib import Path
 
 from dotenv import load_dotenv
 from sqlalchemy.engine import make_url
 
 load_dotenv()  # must run before Config reads os.environ below
+
+
+# Public product identity. Technical identifiers (database name, token keys, repo name) deliberately keep
+# their original "elimupro" spelling so existing deployments and sessions keep working.
+BRAND_NAME = "ElimuNova"
+BRAND_TAGLINE = os.environ.get("BRAND_TAGLINE", "Reimagining Education. Empowering Every Future.")
 
 
 def normalize_database_url(database_url):
@@ -29,6 +37,19 @@ class Config:
     GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
     GEMINI_TIMEOUT = int(os.environ.get("GEMINI_TIMEOUT", 20))
     APEX_RATE_LIMIT_PER_MINUTE = int(os.environ.get("APEX_RATE_LIMIT_PER_MINUTE", 12))
+    # Cyzora Pay (M-Pesa). Both secrets stay server-side; empty = online payments disabled.
+    CYZORA_SECRET_KEY = os.environ.get("CYZORA_SECRET_KEY")  # sk_test_... or sk_live_...
+    CYZORA_WEBHOOK_SECRET = os.environ.get("CYZORA_WEBHOOK_SECRET")  # whsec_...
+    CYZORA_BASE_URL = os.environ.get("CYZORA_BASE_URL", "https://api.cyzora.co.ke/api/v1")
+    CYZORA_TIMEOUT = int(os.environ.get("CYZORA_TIMEOUT", 20))
+    CYZORA_RETRY_DELAY = float(os.environ.get("CYZORA_RETRY_DELAY", 1))  # seconds, doubles per retry on 429/409
+    # ZeroQ document uploads: stored OUTSIDE any static folder and only served through authorised endpoints.
+    # On a host with an ephemeral disk, point this at a persistent volume (or replace services/zeroq_documents storage).
+    ZEROQ_UPLOAD_DIR = os.environ.get("ZEROQ_UPLOAD_DIR") or str(Path(__file__).resolve().parents[2] / "instance" / "zeroq_uploads")
+    ZEROQ_MAX_UPLOAD_MB = int(os.environ.get("ZEROQ_MAX_UPLOAD_MB", 10))
+    ZEROQ_LINK_TTL_SECONDS = int(os.environ.get("ZEROQ_LINK_TTL_SECONDS", 300))  # signed download links
+    ZEROQ_UPLOADS_PER_MINUTE = int(os.environ.get("ZEROQ_UPLOADS_PER_MINUTE", 10))
+    MAX_CONTENT_LENGTH = (ZEROQ_MAX_UPLOAD_MB + 2) * 1024 * 1024
 
 
 class TestConfig(Config):
@@ -39,3 +60,7 @@ class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     SQLALCHEMY_ENGINE_OPTIONS = {}
     GEMINI_API_KEY = None
+    CYZORA_SECRET_KEY = None
+    CYZORA_WEBHOOK_SECRET = None
+    CYZORA_RETRY_DELAY = 0
+    ZEROQ_UPLOAD_DIR = tempfile.mkdtemp(prefix="zeroq-test-")

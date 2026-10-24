@@ -1,7 +1,7 @@
 {
-  "short_name": "ElimuPro",
-  "name": "ElimuPro - School Management",
-  "description": "A modern school management platform for Kenyan schools.",
+  "short_name": "ElimuNova",
+  "name": "ElimuNova",
+  "description": "An integrated education platform connecting students, schools, parents and teachers.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -3,11 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import Login from './Login';
 import Signup from './Signup';
 import { MEDIA } from '../landing/Media';
+import BrandLockup from '../components/BrandLockup';
+import { BRAND } from '../config/brand';
 import './authbook.css';
 
 // One persistent "open book".
 //   Login spread : [ welcome back | login form ]
-//   Signup spread: [ signup form  | welcome to ElimuPro ]
+//   Signup spread: [ signup form  | welcome to ElimuNova ]
 // The login page is the front of a leaf hinged on the spine; its back is the signup page. Turning the leaf is a
 // CSS transition + animation driven by the current route, so routing and auth logic are untouched.
 // Below the book breakpoint (see authbook.css) the same markup renders as a single page with a simple crossfade.
@@ -23,9 +25,9 @@ const Arrow = ({ dir }) => (
 function Welcome({ side, active, mode }) {
   const isBack = mode === 'back';
   return (
-    <aside className={`ab-base ab-${side}${active ? ' active' : ''}`} aria-label={isBack ? 'Welcome back to ElimuPro' : 'Welcome to ElimuPro'}>
+    <aside className={`ab-base ab-${side}${active ? ' active' : ''}`} aria-label={isBack ? `Welcome back to ${BRAND.name}` : `Welcome to ${BRAND.name}`}>
       <div className="ab-scroll ab-welcome">
-        <Link to="/" className="brand">Elimu<b>Pro</b></Link>
+        <Link to="/" className="brand"><BrandLockup /></Link>
         {isBack ? (
           <div className="ab-wbody">
             <span className="ab-pill">Welcome back</span>
@@ -37,7 +39,7 @@ function Welcome({ side, active, mode }) {
           </div>
         ) : (
           <div className="ab-wbody">
-            <span className="ab-pill is-new">Welcome to ElimuPro</span>
+            <span className="ab-pill is-new">Welcome to {BRAND.name}</span>
             <h2>Start something new.</h2>
             <p>Set up your account and begin your admission in one place.</p>
             <ol className="ab-steps">{SIGNUP_STEPS.map((s) => <li key={s}>{s}</li>)}</ol>
@@ -58,7 +60,7 @@ const MobileIntro = ({ mode }) => (
   <div className="ab-mintro">
     {mode === 'back'
       ? <><span className="ab-pill">Welcome back</span><p>Pick up right where you left off.</p></>
-      : <><span className="ab-pill is-new">Welcome to ElimuPro</span><p>Start something new. Set up your account in two steps.</p></>}
+      : <><span className="ab-pill is-new">Welcome to {BRAND.name}</span><p>Start something new. Set up your account in two steps.</p></>}
   </div>
 );
 
@@ -89,14 +91,14 @@ export default function AuthBook() {
         <div className="ab-leaf">
           <section className={`ab-face ab-front${!isSignup ? ' active' : ''}`} aria-label="Log in">
             <div className="ab-scroll">
-              <Link to="/" className="brand ab-mbrand">Elimu<b>Pro</b></Link>
+              <Link to="/" className="brand ab-mbrand"><BrandLockup /></Link>
               <MobileIntro mode="back" />
               <div className="ab-inner"><Login /></div>
             </div>
           </section>
           <section className={`ab-face ab-back${isSignup ? ' active' : ''}`} aria-label="Sign up">
             <div className="ab-scroll">
-              <Link to="/" className="brand ab-mbrand">Elimu<b>Pro</b></Link>
+              <Link to="/" className="brand ab-mbrand"><BrandLockup /></Link>
               <MobileIntro mode="new" />
               <div className="ab-inner">{signupSeen.current && <Signup />}</div>
             </div>

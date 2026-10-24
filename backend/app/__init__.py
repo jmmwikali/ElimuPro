@@ -50,6 +50,10 @@ def create_app(config_object=Config):
     def _404(e):
         return err("Not found", 404)
 
+    @app.errorhandler(413)
+    def _413(e):
+        return err("That upload is too large", 413)
+
     @app.errorhandler(405)
     def _405(e):
         return err("Method not allowed", 405)
@@ -62,6 +66,7 @@ def create_app(config_object=Config):
     @app.get("/api/health")
     @app.get("/api/v1/health")
     def health():
+        # `service` is a machine-readable identifier that uptime monitors may match on, so it keeps its original value.
         return {"success": True, "data": {"status": "ok", "service": "ElimuPro API"}}
 
     @app.get("/api/v1/health/ready")
