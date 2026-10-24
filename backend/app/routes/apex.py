@@ -3,6 +3,7 @@ from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 from flask_jwt_extended.exceptions import JWTExtendedException
 from jwt.exceptions import PyJWTError
 
+from ..config import BRAND_NAME
 from ..extensions import db
 from ..services import apex
 from ..utils.responses import err, ok
@@ -34,7 +35,7 @@ def chat():
     component = body.get("component") or "general"
     message = body.get("message")
     if component not in apex.COMPONENTS:
-        return err("Unknown component", 422, {"component": "Choose a valid ElimuPro component"})
+        return err("Unknown component", 422, {"component": f"Choose a valid {BRAND_NAME} component"})
     if not isinstance(message, str) or not message.strip():
         return err("Type a message", 422, {"message": "Message is required"})
     if len(message) > apex.MAX_MESSAGE_CHARS:

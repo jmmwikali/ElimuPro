@@ -1,4 +1,4 @@
-/* ElimuPro auth "open book".
+/* ElimuNova auth "open book".
    Default (phones, small/short screens) = single page with a short crossfade, no 3D.
    >=900px wide = two-page spread with the original 3D page turn. */
 .ab-stage { min-height: 100%; display: grid; place-items: center; padding: clamp(1rem, 4vw, 2.5rem) clamp(.75rem, 3vw, 2rem); overflow-x: hidden; overflow-x: clip;

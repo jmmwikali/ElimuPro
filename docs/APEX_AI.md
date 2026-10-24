@@ -1,11 +1,11 @@
 # Apex AI customer care (Google Gemini)
 
 Apex AI is a floating "Ask Apex AI" chat available on every page (landing page and all portals).
-It acts as ElimuPro customer care and answers per component:
+It acts as ElimuNova customer care and answers per component:
 
 | Component id | Topic |
 | --- | --- |
-| `general` | ElimuPro in general (signup, admissions workflow, portals) |
+| `general` | ElimuNova in general (signup, admissions workflow, portals) |
 | `academic_analytics` | Academic Analytics |
 | `financial_analytics` | Financial Analytics (priced independently of Academic Analytics) |
 | `zeroq_admissions` | ZeroQ Admissions |
@@ -43,4 +43,4 @@ conversation per topic. Users can switch topic from the "Help with" menu.
 - The assistant is told never to invent prices or payment details, never to ask for passwords/PINs/OTPs, never to claim it
   changed anything, and to state that school fees are paid directly to the school.
 - Prices in the prompt come from the pricing tables (`services/pricing.py`); a component switched off sale is described as
-  "not currently on sale" and the assistant sends the customer to the ElimuPro team.
+  "not currently on sale" and the assistant sends the customer to the ElimuNova team.

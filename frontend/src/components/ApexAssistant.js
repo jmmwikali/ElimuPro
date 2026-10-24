@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { api } from '../services/api';
+import { BRAND } from '../config/brand';
 import './apex.css';
 
 // Apex AI customer care. The server owns the Gemini key and the knowledge for each component;
@@ -9,11 +10,11 @@ const ROUTE_COMPONENT = [
   [/zeroq/i, 'zeroq_admissions'], [/fees|finance/i, 'financial_analytics'],
   [/results|classes/i, 'academic_analytics'], [/career/i, 'careergps'],
 ];
-const FALLBACK = [{ id: 'general', name: 'ElimuPro (general)' }];
+const FALLBACK = [{ id: 'general', name: `${BRAND.name} (general)` }];
 // Components with their own brand mark show it in the chat.
 const PUBLIC = process.env.PUBLIC_URL || '';
 const BRANDS = {
-  careergps: { mark: `${PUBLIC}/careergps-mark.png`, logo: `${PUBLIC}/careergps-logo.png`, alt: 'CareerGPS by ElimuPro' },
+  careergps: { mark: `${PUBLIC}/careergps-mark.png`, logo: `${PUBLIC}/careergps-logo.png`, alt: 'CareerGPS by ElimuNova' },
 };
 
 const guessComponent = (path) => (ROUTE_COMPONENT.find(([re]) => re.test(path)) || [null, 'general'])[1];

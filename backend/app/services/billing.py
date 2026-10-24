@@ -1,4 +1,4 @@
-"""Invoicing for ElimuPro components and the one place an invoice becomes paid."""
+"""Invoicing for ElimuNova components and the one place an invoice becomes paid."""
 import secrets
 from decimal import Decimal
 

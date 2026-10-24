@@ -3,11 +3,12 @@ import { useFetch } from '../../hooks/useFetch';
 import { api } from '../../services/api';
 import { Alert, Button, Empty, ErrorState, Field, Loading, Modal, Pager } from '../../components/ui';
 import { fmtDate, money } from '../../utils/format';
+import { BRAND } from '../../config/brand';
 
 const TONE = { paid: 'green', unpaid: 'warning', void: '' };
 const POLL_MS = 5000;
 const MAX_POLLS = 24; // about 2 minutes, then we stop asking and say so
-const FAILED = { failed: 'The payment failed or was cancelled.', timeout: 'The prompt timed out before it was confirmed.', expired: 'The payment request expired.', amount_mismatch: 'M-Pesa reported a different amount. Nothing was marked paid; please contact ElimuPro support.' };
+const FAILED = { failed: 'The payment failed or was cancelled.', timeout: 'The prompt timed out before it was confirmed.', expired: 'The payment request expired.', amount_mismatch: `M-Pesa reported a different amount. Nothing was marked paid; please contact ${BRAND.name} support.` };
 
 /* The invoice is only ever shown as paid because the SERVER says so (after Cyzora confirmed it),
    never because the prompt was sent or a screen said "success". */
@@ -76,7 +77,7 @@ export default function Billing() {
   return (
     <div className="stack">
       <h1>Billing</h1>
-      <p className="muted">Invoices from ElimuPro for the components your school uses. Pay by M-Pesa; the invoice shows as paid once M-Pesa confirms it. This is separate from the school fees you collect from parents.</p>
+      <p className="muted">Invoices from {BRAND.name} for the components your school uses. Pay by M-Pesa; the invoice shows as paid once M-Pesa confirms it. This is separate from the school fees you collect from parents.</p>
       <Alert type={note.type}>{note.text}</Alert>
       {data.length === 0 ? <div className="card"><Empty title="No invoices yet" /></div> : (
         <><div className="list">{data.map((inv) => (

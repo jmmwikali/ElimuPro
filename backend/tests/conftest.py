@@ -41,3 +41,8 @@ def admin2(client):
 @pytest.fixture()
 def student(client):
     return login(client, "achieng@mwangaza.demo")
+
+
+@pytest.fixture()
+def super_admin_headers(client):
+    return login(client, "super@elimupro.demo")

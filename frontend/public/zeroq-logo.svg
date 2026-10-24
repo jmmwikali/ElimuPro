@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 768" role="img" aria-labelledby="title desc">
-  <title id="title">ZeroQ, powered by ElimuPro</title>
+  <title id="title">ZeroQ, powered by ElimuNova</title>
   <desc id="desc">A luminous blue ZeroQ mark with an orbital ring on a dark background.</desc>
   <defs>
     <radialGradient id="bg" cx="50%" cy="35%" r="80%">
@@ -44,5 +44,5 @@
   <text x="384" y="521" fill="url(#word)" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="600" text-anchor="middle">ZeroQ</text>
   <path d="M126 578h44m428 0h44" stroke="#05d9f5" stroke-width="3"/>
   <text x="384" y="588" fill="#e1ecf8" font-family="Arial, Helvetica, sans-serif" font-size="22" letter-spacing="8" text-anchor="middle">POWERED BY</text>
-  <text x="384" y="632" fill="#06c9f4" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" letter-spacing="7" text-anchor="middle">ELIMUPRO</text>
+  <text x="384" y="632" fill="#06c9f4" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" letter-spacing="7" text-anchor="middle">ELIMUNOVA</text>
 </svg>

@@ -5,6 +5,8 @@ is missing, so a quote or Apex AI answer never has a hole in it.
 """
 from decimal import Decimal, InvalidOperation
 
+from ..config import BRAND_NAME
+
 BILLING_UNITS = {
     "per_school_term": "per school per term",
     "per_admission": "per admission",
@@ -89,7 +91,7 @@ def money_text(amount, currency="KES"):
 def describe(component):
     """Plain-English price line(s), used in Apex AI's prompt so it quotes the live price."""
     if not component["is_active"]:
-        return (f"{component['name']} is not currently on sale. Ask the school to contact the ElimuPro team "
+        return (f"{component['name']} is not currently on sale. Ask the school to contact the {BRAND_NAME} team "
                 "for availability and pricing.")
     unit = BILLING_UNITS[component["billing_unit"]]
     cur = component["currency"]

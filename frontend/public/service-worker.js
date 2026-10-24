@@ -1,9 +1,9 @@
-/* ElimuPro service worker.
+/* ElimuNova service worker.
    - App shell + static assets: cache-first (so the app opens offline)
    - Page navigations: network-first, falling back to the cached shell
    - /api requests are NEVER cached: school data must always be live and private. */
-const CACHE = "elimupro-shell-v1";
-const SHELL = ["/", "/manifest.json", "/icon-192.png", "/icon-512.png"];
+const CACHE = "elimunova-shell-v1"; // renamed from elimupro-shell-v1: activate() deletes the old cache so installed apps pick up the new icons
+const SHELL = ["/", "/manifest.json", "/icon-192.png", "/icon-512.png", "/favicon-32.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

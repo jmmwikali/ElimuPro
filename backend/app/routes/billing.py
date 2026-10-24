@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from flask import Blueprint, current_app, g, request
 
+from ..config import BRAND_NAME
 from ..extensions import db
 from ..models import Invoice, PaymentAttempt, School
 from ..models.billing import INFLIGHT
@@ -17,7 +18,7 @@ bp = Blueprint("billing", __name__, url_prefix="/api/billing")
 
 RETRY_AFTER_MINUTES = 2  # an STK prompt that is still pending blocks a second prompt for this long
 MAX_WEBHOOK_BYTES = 1_000_000
-NOT_CONFIGURED = "Online payments are not set up yet. Please contact ElimuPro support."
+NOT_CONFIGURED = f"Online payments are not set up yet. Please contact {BRAND_NAME} support."
 
 
 def _find(invoice_id):
@@ -28,7 +29,7 @@ def _provider_failure(e):
     """Turn a Cyzora error into a clear message and status for the caller."""
     if e.status in (401, 403):  # our key is wrong or not allowed: not something the school can fix
         current_app.logger.error("Cyzora rejected our credentials (HTTP %s)", e.status)
-        return "Online payments are misconfigured. Please contact ElimuPro support.", 502
+        return f"Online payments are misconfigured. Please contact {BRAND_NAME} support.", 502
     if e.status == 429:
         return "The payment provider is busy. Please try again in a minute.", 429
     if e.status and 400 <= e.status < 500:

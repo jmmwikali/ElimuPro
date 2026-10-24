@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useFetch } from '../../hooks/useFetch';
 import { api } from '../../services/api';
 import { Alert, Button, ErrorState, Field, Loading } from '../../components/ui';
+import { BRAND } from '../../config/brand';
 
 const symbol = (cur) => (cur === 'KES' ? 'KSh' : cur);
 const show = (v) => (v === null || v === undefined ? '' : String(v));
@@ -88,7 +89,7 @@ export default function Pricing() {
   return (
     <div className="stack">
       <h1>Pricing</h1>
-      <p className="muted">Prices for each ElimuPro component. Changes apply to new quotes and to what Apex AI tells customers. Every change is recorded in the audit log.</p>
+      <p className="muted">Prices for each {BRAND.name} component. Changes apply to new quotes and to what Apex AI tells customers. Every change is recorded in the audit log.</p>
       {data.map((c) => <PriceCard key={c.key} c={c} onSaved={reload} />)}
     </div>
   );

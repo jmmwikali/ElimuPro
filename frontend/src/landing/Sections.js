@@ -10,8 +10,8 @@ const P = {
 const Ic = ({ n }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={P[n]} /></svg>;
 
 const FEATURE_LOGOS = {
-  zeroq: ['zeroq-logo.svg', 'ZeroQ, powered by ElimuPro'],
-  careergps: ['careergps-logo.png', 'CareerGPS by ElimuPro'],
+  zeroq: ['zeroq-logo.svg', 'ZeroQ, powered by ElimuNova'],
+  careergps: ['careergps-logo.png', 'CareerGPS by ElimuNova'],
 };
 const FEATURES = [
   ['zeroq', 'ZeroQ digital admissions', 'No queue. No paperwork. Just scan. Complete admission requirements digitally and arrive with a secure pass.'],

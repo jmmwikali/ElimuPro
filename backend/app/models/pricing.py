@@ -3,7 +3,7 @@ from .core import now
 
 
 class PriceComponent(db.Model):
-    """One sellable ElimuPro component. Flat components use `amount`; tiered ones use `tiers`."""
+    """One sellable ElimuNova component. Flat components use `amount`; tiered ones use `tiers`."""
     __tablename__ = "price_components"
     id = db.Column(db.Integer, primary_key=True)
     key = db.Column(db.String(40), nullable=False, unique=True)

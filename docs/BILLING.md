@@ -1,6 +1,6 @@
 # Billing: component invoices paid by M-Pesa (Cyzora Pay)
 
-Schools pay ElimuPro for Academic Analytics, Financial Analytics, ZeroQ and CareerGPS. The platform super admin issues an
+Schools pay ElimuNova for Academic Analytics, Financial Analytics, ZeroQ and CareerGPS. The platform super admin issues an
 invoice, the school admin pays it with an M-Pesa STK push sent through Cyzora `POST /charges`, and the invoice is marked
 paid only after Cyzora confirms it. **School fees are not part of this.** Those stay as recorded payments, and the
 older Daraja route in `routes/finance.py` is untouched. Apex AI Pro is priced in USD and cannot be invoiced here yet.

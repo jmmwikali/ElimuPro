@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Logo from './Logo';
+import { BRAND } from '../config/brand';
 import { HeroMedia } from './Media';
 gsap.registerPlugin(ScrollTrigger);
 
@@ -85,7 +86,7 @@ export default function Walkthrough({ signup }) {
   };
 
   return (
-    <section className="lp-wt" ref={ref} id="roles" aria-label="ElimuPro walkthrough">
+    <section className="lp-wt" ref={ref} id="roles" aria-label={`${BRAND.name} walkthrough`}>
       <HeroMedia />
       <div className="lp-hero-txt">
         <p className="lp-pill">Built for Kenyan schools</p>
@@ -96,7 +97,7 @@ export default function Walkthrough({ signup }) {
       <div className="lp-pk">
         <div className="lp-pk-move"><div className="lp-pk-in">
           <div className="lp-ly lp-ly-b" /><div className="lp-ly lp-ly-m" />
-          <div className="lp-ly lp-ly-f"><Logo /><h2>One system.<br />Every role.</h2><p>ElimuPro connects the people and processes that run a school.</p>
+          <div className="lp-ly lp-ly-f"><Logo /><h2>One system.<br />Every role.</h2><p>{BRAND.name} connects the people and processes that run a school.</p>
             <div className="lp-chips">{ROLES.map((r) => <span key={r.id}>{r.id}</span>)}</div></div>
         </div></div>
       </div>

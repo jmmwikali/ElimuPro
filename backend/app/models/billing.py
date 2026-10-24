@@ -5,7 +5,7 @@ INFLIGHT = ("created", "pending", "error")  # attempts whose outcome we may not 
 
 
 class Invoice(db.Model):
-    """What a school owes ElimuPro for a component. Prices are snapshotted when issued."""
+    """What a school owes ElimuNova for a component. Prices are snapshotted when issued."""
     __tablename__ = "invoices"
     id = db.Column(db.Integer, primary_key=True)
     school_id = db.Column(db.Integer, db.ForeignKey("schools.id"), nullable=False, index=True)

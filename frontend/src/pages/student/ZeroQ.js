@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Alert, Button, ErrorState, Loading } from '../../components/ui';
 import { api } from '../../services/api';
+import { BRAND } from '../../config/brand';
 import '../admin/zeroq.css';
 
 function dateLabel(value) {
@@ -70,7 +71,7 @@ export default function ZeroQStudent() {
   if (!record?.eligible) {
     return (
       <section className="zeroq-page stack">
-        <div className="zeroq-heading"><span className="zeroq-kicker">ELIMUPRO ADMISSIONS</span><h1>ZeroQ</h1><p>No queue. No paperwork. Just scan.</p></div>
+        <div className="zeroq-heading"><span className="zeroq-kicker">{BRAND.name.toUpperCase()} ADMISSIONS</span><h1>ZeroQ</h1><p>No queue. No paperwork. Just scan.</p></div>
         <div className="card zeroq-empty"><h2>Your digital pass comes after approval</h2><p className="muted">Complete your application and wait for your school to approve your admission. Your pass will appear here when you are enrolled.</p></div>
       </section>
     );
@@ -81,7 +82,7 @@ export default function ZeroQStudent() {
 
   return (
     <section className="zeroq-page stack">
-      <div className="zeroq-heading"><span className="zeroq-kicker">ELIMUPRO ADMISSIONS</span><h1>ZeroQ</h1><p>No queue. No paperwork. Just scan.</p></div>
+      <div className="zeroq-heading"><span className="zeroq-kicker">{BRAND.name.toUpperCase()} ADMISSIONS</span><h1>ZeroQ</h1><p>No queue. No paperwork. Just scan.</p></div>
       {message && <Alert type="success">{message}</Alert>}
       {error && <Alert type="error">{error.message} Your pass has not been verified or changed unless the server confirms it.</Alert>}
       {!pass ? (

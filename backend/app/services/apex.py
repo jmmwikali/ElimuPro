@@ -1,6 +1,6 @@
 """Apex AI customer care assistant backed by Google Gemini.
 
-Each ElimuPro component has its own knowledge card. The selected card, plus
+Each ElimuNova component has its own knowledge card. The selected card, plus
 general platform facts, becomes the Gemini system instruction so the assistant
 answers like a customer care agent for that component. Only the user's role,
 first name and school name are sent to Gemini, never records or contact details.
@@ -14,24 +14,26 @@ from threading import Lock
 
 from flask import current_app
 
+from ..config import BRAND_NAME
+
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 PLATFORM_FACTS = """\
-ElimuPro is a school management platform for Kenyan primary, junior secondary and senior secondary schools.
+{brand} is a school management platform for Kenyan primary, junior secondary and senior secondary schools.
 Roles: students, parents/guardians, teachers, school administrators (admin, principal, deputy), bursars and the platform super admin.
 Every record belongs to one school; a school can only see its own data.
 School fees are paid DIRECTLY to the school using the payment details the school publishes (bank, paybill, till, cash).
-ElimuPro does not hold school-fee money and takes no commission on school fees. Bursars record and verify fee payments;
+{brand} does not hold school-fee money and takes no commission on school fees. Bursars record and verify fee payments;
 a receipt upload or screenshot is not confirmation until the school verifies it.
 There is no attendance module.
 Password reset is not self-service yet: users should ask their school administrator for help.
-ElimuPro platform support: ask the school administrator first; schools contact the ElimuPro team through their account manager."""
+{brand} platform support: ask the school administrator first; schools contact the {brand} team through their account manager."""
 
 COMPONENTS = {
     "general": {
-        "name": "ElimuPro (general)",
+        "name": "{brand} (general)",
         "knowledge": """\
-Help with anything about ElimuPro: signing up, logging in, the student application/admission workflow,
+Help with anything about {brand}: signing up, logging in, the student application/admission workflow,
 results, timetables, fees, announcements, parent accounts and which component fits a school's needs.
 Student signup flow: create account -> complete 3-step application -> submit (reference ELM-YYYY-XXXXXX)
 -> school reviews (may request changes, reject or approve) -> on approval the same login opens the student dashboard.
@@ -44,7 +46,7 @@ Current component prices:
         "knowledge": """\
 Academic Analytics gives a school insight into exam results and learner performance across classes, streams and subjects.
 Pricing: {pricing}
-Prices are set by the ElimuPro super admin and may change; the price on the school's invoice is final.
+Prices are set by the {brand} super admin and may change; the price on the school's invoice is final.
 Academic Analytics is priced separately from Financial Analytics.""",
     },
     "financial_analytics": {
@@ -84,7 +86,7 @@ Renewal happens for the next academic year.""",
     "apex_ai": {
         "name": "Apex AI",
         "knowledge": """\
-Apex AI is ElimuPro's AI assistant (this assistant). It answers questions about ElimuPro and its components.
+Apex AI is {brand}'s AI assistant (this assistant). It answers questions about {brand} and its components.
 Plans: Free and Pro. Pro can be paid monthly or yearly; the yearly plan is a discount on paying monthly.
 Pricing:
 {pricing}
@@ -106,16 +108,16 @@ PRICE_KEYS = {
 }
 
 RULES = """\
-You are Apex AI, the friendly customer care assistant for ElimuPro.
+You are Apex AI, the friendly customer care assistant for {brand}.
 You are currently helping with: {component}.
 Behave like a professional customer care agent:
 - Greet warmly, be concise (short paragraphs or a few bullet points), patient and polite. Use simple English; reply in Kiswahili if the user writes in Kiswahili.
-- Answer ONLY from the facts below. If you do not know, say so and direct the user to their school administrator or the ElimuPro team. Never invent prices, features, dates, phone numbers, emails, bank accounts, paybills or till numbers.
+- Answer ONLY from the facts below. If you do not know, say so and direct the user to their school administrator or the {brand} team. Never invent prices, features, dates, phone numbers, emails, bank accounts, paybills or till numbers.
 - You cannot see or change any account, record, result, payment or application. Never claim you have done something on the user's behalf.
 - Never ask for or accept passwords, PINs, M-Pesa PINs, card numbers or OTP codes. If shared, tell the user not to share them.
 - For fee payment questions, remind the user that fees go directly to the school using the school's published details.
-- If the question belongs to another ElimuPro component, answer briefly and suggest switching to that topic.
-- Stay on ElimuPro topics; politely decline unrelated requests.
+- If the question belongs to another {brand} component, answer briefly and suggest switching to that topic.
+- Stay on {brand} topics; politely decline unrelated requests.
 
 User context: {user_context}
 
@@ -134,7 +136,7 @@ class ApexUnavailable(Exception):
 
 
 def component_list():
-    return [{"id": key, "name": c["name"]} for key, c in COMPONENTS.items()]
+    return [{"id": key, "name": c["name"].replace("{brand}", BRAND_NAME)} for key, c in COMPONENTS.items()]
 
 
 def price_text(component):
@@ -146,14 +148,14 @@ def price_text(component):
 
 def system_prompt(component, user=None):
     if user:
-        school = user.school.name if user.school_id and user.school else "ElimuPro platform"
+        school = user.school.name if user.school_id and user.school else f"{BRAND_NAME} platform"
         user_context = f"signed-in {user.role.replace('_', ' ')} named {user.first_name} at {school}"
     else:
         user_context = "visitor who is not signed in"
     c = COMPONENTS[component]
-    knowledge = c["knowledge"].replace("{pricing}", price_text(component))
-    return RULES.format(component=c["name"], user_context=user_context,
-                        knowledge=knowledge, platform=PLATFORM_FACTS)
+    knowledge = c["knowledge"].replace("{pricing}", price_text(component)).replace("{brand}", BRAND_NAME)
+    return RULES.format(component=c["name"].replace("{brand}", BRAND_NAME), user_context=user_context,
+                        knowledge=knowledge, platform=PLATFORM_FACTS.replace("{brand}", BRAND_NAME), brand=BRAND_NAME)
 
 
 def clean_history(history):

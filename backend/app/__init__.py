@@ -62,6 +62,7 @@ def create_app(config_object=Config):
     @app.get("/api/health")
     @app.get("/api/v1/health")
     def health():
+        # `service` is a machine-readable identifier that uptime monitors may match on, so it keeps its original value.
         return {"success": True, "data": {"status": "ok", "service": "ElimuPro API"}}
 
     @app.get("/api/v1/health/ready")

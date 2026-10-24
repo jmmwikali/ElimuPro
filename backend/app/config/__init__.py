@@ -7,6 +7,12 @@ from sqlalchemy.engine import make_url
 load_dotenv()  # must run before Config reads os.environ below
 
 
+# Public product identity. Technical identifiers (database name, token keys, repo name) deliberately keep
+# their original "elimupro" spelling so existing deployments and sessions keep working.
+BRAND_NAME = "ElimuNova"
+BRAND_TAGLINE = os.environ.get("BRAND_TAGLINE", "Reimagining Education. Empowering Every Future.")
+
+
 def normalize_database_url(database_url):
     if not database_url:
         return database_url

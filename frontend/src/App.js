@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AppShell from './layouts/AppShell';
 import { useAuth, homeFor } from './context/AuthContext';
+import { BRAND } from './config/brand';
 import Landing from './pages/Landing';
 import AuthBook from './pages/AuthBook';
 import Application from './pages/student/Application';
@@ -137,7 +138,7 @@ export default function App() {
       </Route>
 
       <Route element={<ProtectedRoute roles={['super_admin']} />}>
-        <Route path="/platform" element={<AppShell nav={PLATFORM_NAV} brandLabel="ElimuPro Platform" />}>
+        <Route path="/platform" element={<AppShell nav={PLATFORM_NAV} brandLabel={`${BRAND.name} Platform`} />}>
           <Route index element={<Platform />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="invoices" element={<Invoices />} />
