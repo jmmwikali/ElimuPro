@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useFetch } from '../../hooks/useFetch';
 import { Empty, ErrorState, Loading } from '../../components/ui';
+import ModuleCards from '../../components/ModuleCards';
 import { fmtDate, greeting, initials, money } from '../../utils/format';
 
 export default function ParentDashboard() {
@@ -13,6 +14,8 @@ export default function ParentDashboard() {
         <h1>{greeting()}, {d.parent.first_name}</h1>
         <p className="muted">{d.school.name}{d.term ? ` · ${d.term.name}, ${d.term.year}` : ''}</p>
       </div>
+
+      <ModuleCards base="/parent" />
 
       {d.children.length === 0 ? (
         <div className="card"><Empty title="No children linked yet">Ask the school office to link your account to your child's record.</Empty></div>

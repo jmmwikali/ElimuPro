@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useFetch } from '../../hooks/useFetch';
 import { ErrorState, Loading, Empty } from '../../components/ui';
+import ModuleCards from '../../components/ModuleCards';
 import { fmtDate, greeting, initials, money } from '../../utils/format';
 
 export default function Dashboard() {
@@ -32,6 +33,8 @@ export default function Dashboard() {
           <div className="value" style={{ fontSize: '1.15rem' }}>{d.next_lesson ? d.next_lesson.title : 'None today'}</div>
           {d.next_lesson && <span className="small muted">{d.next_lesson.start_time} - {d.next_lesson.end_time}</span>}</div>
       </div>
+
+      <ModuleCards />
 
       <section>
         <div className="row between"><h2>Announcements</h2><Link to="/student/announcements" className="small">See all</Link></div>

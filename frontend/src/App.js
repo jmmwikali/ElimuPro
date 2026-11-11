@@ -36,6 +36,9 @@ import Modules from './pages/admin/Modules';
 import CareerGPS from './pages/admin/CareerGPS';
 import StudentCareerGPS from './pages/student/CareerGPS';
 import PlatformOverview from './pages/admin/PlatformOverview';
+import ModuleGate from './components/ModuleGate';
+import ParentZeroQ from './pages/parent/ZeroQ';
+import ParentCareerGPS from './pages/parent/CareerGPS';
 
 const STUDENT_NAV = [
   { to: '/student', label: 'Home', icon: 'home', end: true }, { to: '/student/results', label: 'Results', icon: 'chart' },
@@ -67,7 +70,10 @@ const PLATFORM_NAV = [
   { to: '/platform/leadership', label: 'Leadership', icon: 'user' },
 ];
 const PARENT_NAV = [
-  { to: '/parent', label: 'My children', icon: 'users', end: true }, { to: '/parent/announcements', label: 'News', icon: 'bell' },
+  { to: '/parent', label: 'My children', icon: 'users', end: true },
+  { to: '/parent/zeroq', label: 'ZeroQ', icon: 'file' },
+  { to: '/parent/careergps', label: 'CareerGPS', icon: 'book' },
+  { to: '/parent/announcements', label: 'News', icon: 'bell' },
   { to: '/parent/settings', label: 'Settings', icon: 'gear' },
 ];
 const TEACHER_NAV = [
@@ -105,9 +111,9 @@ export default function App() {
           <Route path="onboarding" element={<Onboarding />} />
           <Route path="zeroq" element={<ZeroQStudent />} />
           <Route path="careergps" element={<StudentCareerGPS />} />
-          <Route path="results" element={<Results />} />
-          <Route path="timetable" element={<Timetable />} />
-          <Route path="fees" element={<Fees />} />
+          <Route path="results" element={<ModuleGate><Results /></ModuleGate>} />
+          <Route path="timetable" element={<ModuleGate><Timetable /></ModuleGate>} />
+          <Route path="fees" element={<ModuleGate><Fees /></ModuleGate>} />
           <Route path="announcements" element={<Announcements />} />
           <Route path="profile" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
@@ -149,6 +155,8 @@ export default function App() {
       <Route element={<ProtectedRoute roles={['parent']} />}>
         <Route path="/parent" element={<AppShell nav={PARENT_NAV} bottom={PARENT_NAV} />}>
           <Route index element={<ParentDashboard />} />
+          <Route path="zeroq" element={<ParentZeroQ />} />
+          <Route path="careergps" element={<ParentCareerGPS />} />
           <Route path="children/:id" element={<ParentChild />} />
           <Route path="announcements" element={<ParentAnnouncements />} />
           <Route path="settings" element={<Settings />} />
