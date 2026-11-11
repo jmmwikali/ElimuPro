@@ -1,4 +1,4 @@
-import { useState } from 'react';
+const DEFAULT_PHOTO = '/brand/rose-seko.jpg';
 import { useFetch } from '../../hooks/useFetch';
 import { api } from '../../services/api';
 import { Alert, Button, ErrorState, Field, Loading, Modal } from '../../components/ui';
@@ -38,11 +38,11 @@ export default function Leadership() {
 
       {!editing ? (
         <div className="card" style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-          {profile.photo_url && (
+          { (profile.photo_url || DEFAULT_PHOTO) && (
             <img
-              src={profile.photo_url}
-              alt={profile.name}
-              style={{ width: 160, height: 160, objectFit: 'cover', borderRadius: '50%', marginBottom: '1.25rem', border: '4px solid #f0f0f0' }}
+              src={profile.photo_url || DEFAULT_PHOTO}
+              alt={profile.name || 'Rose Seko'}
+              style={{ width: 200, height: 200, objectFit: 'cover', borderRadius: '50%', marginBottom: '1.5rem', border: '4px solid #e8e8ef', boxShadow: '0 8px 24px rgba(0,0,0,.08)' }}
             />
           )}
           <h2 style={{ margin: '0 0 .25rem', fontSize: '1.75rem' }}>{profile.name}</h2>

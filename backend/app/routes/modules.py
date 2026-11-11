@@ -72,6 +72,7 @@ def get_leadership():
                 "We proudly acknowledge Rose Seko, whose leadership and vision contribute to "
                 "building a smarter, more connected and accessible education ecosystem."
             ),
+            photo_url="/brand/rose-seko.jpg",
             is_visible=True,
         )
         db.session.add(profile)

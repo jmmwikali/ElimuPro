@@ -35,6 +35,7 @@ import Leadership from './pages/admin/Leadership';
 import Modules from './pages/admin/Modules';
 import CareerGPS from './pages/admin/CareerGPS';
 import StudentCareerGPS from './pages/student/CareerGPS';
+import PlatformOverview from './pages/admin/PlatformOverview';
 
 const STUDENT_NAV = [
   { to: '/student', label: 'Home', icon: 'home', end: true }, { to: '/student/results', label: 'Results', icon: 'chart' },
@@ -156,7 +157,7 @@ export default function App() {
 
       <Route element={<ProtectedRoute roles={['super_admin']} />}>
         <Route path="/platform" element={<AppShell nav={PLATFORM_NAV} brandLabel={`${BRAND.name} Platform`} />}>
-          <Route index element={<Platform />} />
+          <Route index element={<PlatformOverview />} />
           <Route path="schools" element={<Platform />} />
           <Route path="modules" element={<Modules />} />
           <Route path="pricing" element={<Pricing />} />
