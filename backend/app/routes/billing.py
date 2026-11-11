@@ -136,6 +136,66 @@ def pay_invoice(invoice_id):
     return ok(inv.to_dict(), 202, message="Check your phone and enter your M-Pesa PIN.")
 
 
+@bp.post("/invoices/<int:invoice_id>/checkout")
+@roles_required(*ADMIN_ROLES)
+def checkout_invoice(invoice_id):
+    """Start a Cyzora hosted checkout session. Returns checkout_url for the browser to redirect to.
+
+    The invoice is NEVER marked paid here or from the redirect. Only the webhook or a later
+    verify/refresh call can do that.
+    """
+    inv = scoped_get(Invoice, invoice_id)
+    if not inv:
+        return err("Invoice not found", 404)
+    if inv.status != "unpaid":
+        return err(f"This invoice is already {inv.status}", 409)
+    if not cyzora.configured():
+        return err(NOT_CONFIGURED, 503)
+    d = request.get_json(silent=True) or {}
+    phone = normalize_phone(d.get("phone")) if d.get("phone") else None
+    cutoff = now() - timedelta(minutes=RETRY_AFTER_MINUTES)
+    if any(a.status in INFLIGHT and a.created_at > cutoff for a in inv.attempts):
+        return err("A payment is already in progress for this invoice. Wait a couple of minutes.", 409)
+
+    attempt = PaymentAttempt(
+        invoice_id=inv.id, school_id=inv.school_id, phone=phone or "checkout",
+        amount_cents=int(inv.amount * 100),
+        idempotency_key=f"chk-{inv.number}-{secrets.token_hex(6)}", created_by=g.user.id)
+    db.session.add(attempt)
+    db.session.commit()
+
+    frontend = current_app.config.get("FRONTEND_URL") or ""
+    callback = f"{frontend}/admin/billing?invoice={inv.id}&status=success"
+    cancel = f"{frontend}/admin/billing?invoice={inv.id}&status=cancelled"
+    try:
+        session = cyzora.initialize_checkout(
+            attempt.amount_cents, inv.number,
+            description=inv.description,
+            callback_url=callback, cancel_url=cancel,
+            customer_phone=phone,
+            metadata={"invoice": inv.number, "school_id": inv.school_id, "attempt_id": attempt.id},
+            idempotency_key=attempt.idempotency_key)
+        reference = session.get("reference")
+        checkout_url = session.get("checkout_url")
+        if not reference or not checkout_url:
+            raise cyzora.CyzoraError("Payment provider sent an unexpected response")
+    except cyzora.CyzoraError as e:
+        attempt.status = "failed" if e.status and 400 <= e.status < 500 else "error"
+        attempt.error = str(e)[:255]
+        audit("billing.checkout_failed", "invoice", inv.id, {"attempt_id": attempt.id, "http": e.status})
+        db.session.commit()
+        message, status = _provider_failure(e)
+        return err(message, status)
+
+    # Store the reference as the provider id so webhooks and refresh can match it.
+    attempt.provider_charge_id = str(reference)
+    attempt.provider_status = session.get("status") or "awaiting_payment"
+    attempt.status = "pending"
+    audit("billing.checkout_started", "invoice", inv.id, {"attempt_id": attempt.id, "reference": reference})
+    db.session.commit()
+    return ok({"checkout_url": checkout_url, "reference": reference, "invoice": inv.to_dict()}, 202)
+
+
 @bp.post("/invoices/<int:invoice_id>/refresh")
 @roles_required("super_admin", *ADMIN_ROLES)
 def refresh_invoice(invoice_id):
@@ -146,7 +206,12 @@ def refresh_invoice(invoice_id):
     attempt = inv.latest_attempt()
     if inv.status == "unpaid" and attempt and attempt.status in ("pending", "error") and attempt.provider_charge_id:
         try:
-            billing.apply_charge_result(attempt, cyzora.charge_fields(cyzora.get_charge(attempt.provider_charge_id)))
+            # Hosted checkout sessions are verified by reference; STK charges by id.
+            if str(attempt.idempotency_key or "").startswith("chk-"):
+                result = cyzora.verify_transaction(attempt.provider_charge_id)
+            else:
+                result = cyzora.get_charge(attempt.provider_charge_id)
+            billing.apply_charge_result(attempt, cyzora.charge_fields(result))
             db.session.commit()
         except cyzora.CyzoraError as e:
             db.session.rollback()
@@ -180,14 +245,25 @@ def cyzora_webhook():
     if event not in ("charge.succeeded", "charge.failed", "charge.expired"):
         return ok({"ignored": event})  # payout.* and anything new: acknowledged, not ours to act on
 
-    charge_id = cyzora.charge_fields(body)["id"]
-    attempt = PaymentAttempt.query.filter_by(provider_charge_id=str(charge_id)).first() if charge_id else None
+    fields = cyzora.charge_fields(body)
+    charge_id = fields["id"]
+    reference = fields.get("reference") or body.get("reference")
+    attempt = None
+    if charge_id:
+        attempt = PaymentAttempt.query.filter_by(provider_charge_id=str(charge_id)).first()
+    if not attempt and reference:
+        attempt = PaymentAttempt.query.filter_by(provider_charge_id=str(reference)).first()
     if not attempt:
-        billing.log("billing.webhook_unmatched", details={"event": event, "charge_id": str(charge_id)[:80]})
+        billing.log("billing.webhook_unmatched", details={"event": event, "charge_id": str(charge_id or reference)[:80]})
         db.session.commit()
         return ok({"ignored": "unknown charge"})
     try:  # confirm with Cyzora rather than trusting the body alone
-        outcome = billing.apply_charge_result(attempt, cyzora.charge_fields(cyzora.get_charge(attempt.provider_charge_id)))
+        # Prefer verify for checkout references, get_charge for STK ids
+        if str(attempt.idempotency_key or "").startswith("chk-"):
+            result = cyzora.verify_transaction(attempt.provider_charge_id)
+        else:
+            result = cyzora.get_charge(attempt.provider_charge_id)
+        outcome = billing.apply_charge_result(attempt, cyzora.charge_fields(result))
     except cyzora.CyzoraError:
         db.session.rollback()
         return err("Could not confirm the charge, please retry", 502)  # Cyzora retries after 10s, 30s, 2m, 10m

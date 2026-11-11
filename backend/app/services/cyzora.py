@@ -1,12 +1,9 @@
-"""Cyzora Pay client (M-Pesa STK push) and webhook signature check.
+"""Cyzora Pay client (STK push, hosted checkout) and webhook signature check.
 
 The secret key and webhook secret come from config (environment variables) and never leave the server.
 Amounts are integer cents in whole shillings (KES 1,500 = 150000).
 
-NOT VERIFIED AGAINST THE LIVE DOCS: this was written from the integration brief because docs.cyzora.co.ke
-was unreachable. The brief fixes the endpoints, headers, statuses, event names and signature scheme, but not
-the JSON shape of a charge object. `charge_fields` is the single place that reads it. If a field name differs,
-payments fail safe (an invoice stays unpaid) and only that function needs to change.
+Verified against https://docs.cyzora.co.ke (STK, hosted checkout, webhooks, signature scheme).
 """
 import hashlib
 import hmac
@@ -83,17 +80,48 @@ def create_charge(amount_cents, phone, account_ref, metadata, idempotency_key):
         "metadata": {k: str(v) for k, v in metadata.items()}}, idempotency_key=idempotency_key)
 
 
+def initialize_checkout(amount_cents, account_ref, description=None, callback_url=None,
+                        cancel_url=None, customer_phone=None, customer_email=None,
+                        metadata=None, expires_in=None, idempotency_key=None):
+    """Hosted checkout. Returns reference and checkout_url. Amount is integer cents (whole shillings)."""
+    body = {"amount": int(amount_cents), "account_ref": account_ref}
+    if description:
+        body["description"] = description[:200]
+    if callback_url:
+        body["callback_url"] = callback_url
+    if cancel_url:
+        body["cancel_url"] = cancel_url
+    if customer_phone:
+        body["customer_phone"] = customer_phone
+    if customer_email:
+        body["customer_email"] = customer_email
+    if metadata:
+        body["metadata"] = {k: str(v) for k, v in metadata.items()}
+    if expires_in:
+        body["expires_in"] = int(expires_in)
+    return _request("POST", "/transactions/initialize", body, idempotency_key=idempotency_key)
+
+
+def verify_transaction(reference):
+    """Confirm a hosted checkout session. Only trust this or the webhook, never the redirect."""
+    return _request("GET", "/transactions/verify/" + urllib.parse.quote(str(reference), safe=""))
+
+
 def get_charge(charge_id):
     return _request("GET", "/charges/" + urllib.parse.quote(str(charge_id), safe=""))
 
 
 def charge_fields(obj):
-    """The only place that reads a charge object (from POST/GET /charges or a webhook event)."""
+    """The only place that reads a charge object (from POST/GET /charges, verify, or a webhook event)."""
     data = obj.get("data") if isinstance(obj.get("data"), dict) else obj
     cents = data.get("amount_cents", data.get("amount"))
-    return {"id": data.get("id"), "status": data.get("status"),
-            "amount_cents": cents if isinstance(cents, (int, float)) and not isinstance(cents, bool) else None,
-            "receipt": data.get("receipt")}
+    return {
+        "id": data.get("id") or data.get("charge_id") or data.get("reference"),
+        "status": data.get("status"),
+        "amount_cents": cents if isinstance(cents, (int, float)) and not isinstance(cents, bool) else None,
+        "receipt": data.get("receipt") or data.get("mpesa_receipt"),
+        "reference": data.get("reference"),
+    }
 
 
 def verify_signature(raw_body, header, secret):
