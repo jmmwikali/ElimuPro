@@ -31,11 +31,16 @@ import ZeroQStudent from './pages/student/ZeroQ';
 import Onboarding from './pages/student/Onboarding';
 import ZeroQReview from './pages/admin/ZeroQReview';
 import { ZeroQDashboard, ZeroQQueue, ZeroQScanner } from './pages/admin/ZeroQ';
+import Leadership from './pages/admin/Leadership';
+import Modules from './pages/admin/Modules';
+import CareerGPS from './pages/admin/CareerGPS';
+import StudentCareerGPS from './pages/student/CareerGPS';
 
 const STUDENT_NAV = [
   { to: '/student', label: 'Home', icon: 'home', end: true }, { to: '/student/results', label: 'Results', icon: 'chart' },
   { to: '/student/timetable', label: 'Timetable', icon: 'clock' }, { to: '/student/fees', label: 'Fees', icon: 'wallet' },
   { to: '/student/zeroq', label: 'ZeroQ', icon: 'file' },
+  { to: '/student/careergps', label: 'CareerGPS', icon: 'book' },
   { to: '/student/announcements', label: 'News', icon: 'bell' },
 ];
 const STUDENT_SIDE = [...STUDENT_NAV, { to: '/student/onboarding', label: 'Admission progress', icon: 'chart' }, { to: '/student/profile', label: 'My Profile', icon: 'user' },
@@ -44,7 +49,8 @@ const APPLICANT_SIDE = [{ to: '/student/application', label: 'My Application', i
 
 const ADMIN_NAV = [
   { to: '/admin', label: 'Dashboard', icon: 'home', end: true }, { to: '/admin/applications', label: 'Applications', icon: 'file' },
-  { to: '/admin/zeroq', label: 'ZeroQ Admissions', icon: 'file' },
+  { to: '/admin/zeroq', label: 'ZeroQ', icon: 'file' },
+  { to: '/admin/careergps', label: 'CareerGPS', icon: 'book' },
   { to: '/admin/zeroq-review', label: 'ZeroQ Review', icon: 'file' },
   { to: '/admin/students', label: 'Students', icon: 'users' }, { to: '/admin/teachers', label: 'Teachers', icon: 'book' }, { to: '/admin/parents', label: 'Parents', icon: 'users' }, { to: '/admin/classes', label: 'Classes & Streams', icon: 'school' },
   { to: '/admin/fees', label: 'Fees & Payments', icon: 'wallet' }, { to: '/admin/announcements', label: 'Announcements', icon: 'bell' },
@@ -52,8 +58,12 @@ const ADMIN_NAV = [
 ];
 const BURSAR_NAV = [ADMIN_NAV[0], ADMIN_NAV.find((n) => n.to === '/admin/fees')];
 const PLATFORM_NAV = [
-  { to: '/platform', label: 'Schools', icon: 'school', end: true }, { to: '/platform/pricing', label: 'Pricing', icon: 'wallet' },
+  { to: '/platform', label: 'Overview', icon: 'home', end: true },
+  { to: '/platform/schools', label: 'Schools', icon: 'school' },
+  { to: '/platform/modules', label: 'Modules', icon: 'file' },
+  { to: '/platform/pricing', label: 'Pricing', icon: 'wallet' },
   { to: '/platform/invoices', label: 'Invoices', icon: 'file' },
+  { to: '/platform/leadership', label: 'Leadership', icon: 'user' },
 ];
 const PARENT_NAV = [
   { to: '/parent', label: 'My children', icon: 'users', end: true }, { to: '/parent/announcements', label: 'News', icon: 'bell' },
@@ -93,6 +103,7 @@ export default function App() {
           <Route path="application" element={<Application />} />
           <Route path="onboarding" element={<Onboarding />} />
           <Route path="zeroq" element={<ZeroQStudent />} />
+          <Route path="careergps" element={<StudentCareerGPS />} />
           <Route path="results" element={<Results />} />
           <Route path="timetable" element={<Timetable />} />
           <Route path="fees" element={<Fees />} />
@@ -110,6 +121,7 @@ export default function App() {
             <Route path="applications" element={<Applications />} />
             <Route path="applications/:id" element={<ApplicationDetail />} />
             <Route path="zeroq" element={<ZeroQDashboard />} />
+            <Route path="careergps" element={<CareerGPS />} />
             <Route path="zeroq/queue" element={<ZeroQQueue />} />
             <Route path="zeroq-review" element={<ZeroQReview />} />
             <Route path="zeroq/scanner" element={<ZeroQScanner />} />
@@ -145,8 +157,12 @@ export default function App() {
       <Route element={<ProtectedRoute roles={['super_admin']} />}>
         <Route path="/platform" element={<AppShell nav={PLATFORM_NAV} brandLabel={`${BRAND.name} Platform`} />}>
           <Route index element={<Platform />} />
+          <Route path="schools" element={<Platform />} />
+          <Route path="modules" element={<Modules />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="invoices" element={<Invoices />} />
+          <Route path="leadership" element={<Leadership />} />
+          <Route path="careergps" element={<CareerGPS />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

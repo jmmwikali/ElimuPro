@@ -13,7 +13,8 @@ def register_blueprints(app):
     from .pricing import bp as pricing
     from .billing import bp as billing
     from .zeroq_onboarding import bp as zeroq_onboarding
-    for bp in (auth, schools, admissions, students, academics, finance, announcements, teachers, parents, zeroq, apex, pricing, billing, zeroq_onboarding):
+    from .modules import bp as modules
+    for bp in (auth, schools, admissions, students, academics, finance, announcements, teachers, parents, zeroq, apex, pricing, billing, zeroq_onboarding, modules):
         versioned_prefix = bp.url_prefix.replace("/api", "/api/v1", 1)
         app.register_blueprint(bp, url_prefix=versioned_prefix, name=f"{bp.name}_v1")
         app.register_blueprint(bp, name=f"{bp.name}_legacy")

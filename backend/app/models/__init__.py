@@ -8,3 +8,4 @@ from .pricing import PriceComponent, PriceTier
 from .billing import Invoice, PaymentAttempt
 from .zeroq_onboarding import (AssessmentResult, AssessmentResultEvent, DocumentEvent, DocumentRequirement,
                                   Notification)
+from .modules import (PlatformModule, SchoolModule, LeadershipProfile, CareerPath, StudentCareerInterest)

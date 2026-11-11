@@ -54,7 +54,23 @@ React 18 (JavaScript, React Router 6, plain CSS, `react-scripts`; no Vite) · Fl
 ## Prerequisites
 Python 3.10+, Node.js 18+, PostgreSQL 15+ (or Docker Desktop).
 
-## Run with Docker
+## Recent platform upgrade (modules + Super Admin)
+
+ElimuNova now treats three areas as independent modules that share one authentication and school identity:
+
+- **Academics & Financial Management** (core, always available)
+- **ZeroQ** (queue / admissions workflow)
+- **CareerGPS** (career exploration and guidance)
+
+Super Admin gains a Module Management page (`/platform/modules`) to enable or disable ZeroQ and CareerGPS per school, plus an editable **Leadership & Vision** section (`/platform/leadership`) for the company owner acknowledgement.
+
+Apply the new migration after pulling:
+
+```bash
+cd backend && flask --app run:app db upgrade
+```
+
+The migration is `a1b2c3d4e5f6_add_platform_modules_leadership_careergps`.
 Copy `.env.example` to `.env`, replace the development-only secrets, then run `docker compose up --build`. The frontend is at
 `http://localhost:8080`; the API is at `http://localhost:5000/api/v1`. Compose starts PostgreSQL, applies migrations, then starts the API and frontend.
 
