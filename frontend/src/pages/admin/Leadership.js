@@ -1,8 +1,9 @@
-const DEFAULT_PHOTO = '/brand/rose-seko.jpg';
+import { useState } from 'react';
 import { useFetch } from '../../hooks/useFetch';
 import { api } from '../../services/api';
 import { Alert, Button, ErrorState, Field, Loading, Modal } from '../../components/ui';
 
+const DEFAULT_PHOTO = '/brand/rose-seko.jpg';
 export default function Leadership() {
   const { data, loading, error, reload } = useFetch('/modules/leadership');
   const [editing, setEditing] = useState(false);
