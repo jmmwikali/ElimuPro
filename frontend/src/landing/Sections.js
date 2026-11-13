@@ -51,7 +51,7 @@ export function Features() {
           const isZeroQ = i === 'zeroq';
           const card = (
             <div key={t} className={logo ? `lp-feature-${i}` : ''} style={isZeroQ ? { cursor: 'pointer' } : undefined}>
-             {logo ? <img className="lp-feature-logo" src={`\( {process.env.PUBLIC_URL || ''}/ \){logo[0]}`} alt={logo[1]} /> : <span className="lp-fic"><Ic n={i} /></span>}
+              {logo ? <img className="lp-feature-logo" src={`\( {process.env.PUBLIC_URL || ''}/ \){logo[0]}`} alt={logo[1]} /> : <span className="lp-fic"><Ic n={i} /></span>}
               <div><h3>{t}</h3><p>{d}</p></div>
             </div>
           );
