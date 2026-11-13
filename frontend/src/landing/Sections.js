@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { MEDIA, Photo } from './Media';
 
 const P = {
@@ -35,15 +36,30 @@ export function Features() {
         <div><p className="lp-eyebrow">Complete school operations</p><h2>Everything works better together</h2></div>
         <Photo item={MEDIA.features} />
       </div>
+      <div className="lp-leadership" style={{ textAlign: 'center', margin: '2.5rem auto', maxWidth: 280 }}>
+        <img
+          src={`${process.env.PUBLIC_URL || ''}/brand/rose-seko.jpg`}
+          alt="Rose Seko, Founder of Rose Seko Foundations"
+          style={{ width: 160, height: 160, objectFit: 'cover', borderRadius: '50%', border: '4px solid #e8e8ef', display: 'block', margin: '0 auto 1rem' }}
+        />
+        <h3 style={{ margin: '0.4rem 0 0.2rem' }}>Rose Seko</h3>
+        <p className="muted" style={{ margin: 0, fontSize: '0.95rem' }}>Founder, Rose Seko Foundations</p>
+      </div>
       <div className="lp-fgrid">
         {FEATURES.map(([i, t, d]) => {
           const logo = FEATURE_LOGOS[i];
-          return (
-            <div key={t} className={logo ? `lp-feature-${i}` : ''}>
-              {logo ? <img className="lp-feature-logo" src={`${process.env.PUBLIC_URL || ''}/${logo[0]}`} alt={logo[1]} /> : <span className="lp-fic"><Ic n={i} /></span>}
+          const isZeroQ = i === 'zeroq';
+          const card = (
+            <div key={t} className={logo ? `lp-feature-${i}` : ''} style={isZeroQ ? { cursor: 'pointer' } : undefined}>
+              {logo ? <img className="lp-feature-logo" src={`\( {process.env.PUBLIC_URL || ''}/ \){logo[0]}`} alt={logo[1]} /> : <span className="lp-fic"><Ic n={i} /></span>}
               <div><h3>{t}</h3><p>{d}</p></div>
             </div>
           );
+          return isZeroQ ? (
+            <Link key={t} to="/signup" style={{ textDecoration: 'none', color: 'inherit' }} aria-label="Get started with ZeroQ admissions">
+              {card}
+            </Link>
+          ) : card;
         })}
       </div>
     </section>
