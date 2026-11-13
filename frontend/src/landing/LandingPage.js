@@ -31,8 +31,8 @@ export default function LandingPage() {
         <div><span className="lp-logo"><Logo light /></span><p>{BRAND.tagline}</p></div>
         <div><h4>Platform</h4><p>Admissions</p><p>Students</p><p>Academics</p><p>Fees</p><p>Results</p><p>Reports</p></div>
         <div><h4>Access</h4><p><Link to={LOGIN}>School admin</Link></p><p><Link to={LOGIN}>Teacher</Link></p><p><Link to={SIGNUP}>Student</Link></p><p>Parent</p></div>
-        <div><h4>Company</h4><p>About</p><p>Contact</p><p>Privacy</p><p>Terms</p></div>
+        <div><h4>Company</h4><p>Rose Seko Foundations</p><p>About</p><p>Contact</p><p>Privacy</p><p>Terms</p></div>
       </footer>
     </div>
   );
-}
+  }
